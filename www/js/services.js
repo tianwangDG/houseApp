@@ -12,5 +12,9 @@ angular.module('starter.services', ['ngResource'])
 		});
 	})
 
+	.factory('HouseDetail', function($resource, appInfo){
+		return $resource(appInfo.apiUrl + '/house/show?house_id=:id', {id:"@id"},{
 
+		});
+	})
 

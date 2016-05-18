@@ -90,7 +90,6 @@
                     <img ng-src="{{slider.house_slider_src}}" alt="{{slider.house_name}}"  />
                   </ion-slide>
                 </ion-slide-box>
-
                 <div class="row housetype padding">
                   <div class="col">
                     <img src="img/housetype/s1.png" alt="housetype1" />
@@ -115,33 +114,47 @@
                 </div>
 
                 <div class="filter">
-                  <div class="filter_header">
-                    <h4 class="filter_cate" ng-repeat="ft in filterType | limitTo:4 track by $index" ng-click="showFilter(ft.id,ft.lx,$index)">{{ft.name}} <i class="icon " ng-class="{true:'ion-arrow-down-b allColor', false:'ion-arrow-up-b'}[($index+1) == key]"></i></h4>
-                    <h4 ng-click="showMoreFilter()">更多 <i class="icon"  ng-class="{true:'ion-arrow-down-b allColor', false:'ion-arrow-up-b'}[showMoreFilterBox]"></i></h4>
-                  </div>
-
-                  <div class="filter_zt" ng-show="showFilterBox">
-                    <ul class="list">
-                      <li class="item" ng-repeat="item in items" ng-click="filterZt(item.lx,item.id)">{{item.name}}</li>
-                    </ul>
-                  </div>
-
-                  <div class="row moreFilterBox" ng-show="showMoreFilterBox">
-                    <div class="col-33">
-                      <ul class="list">
-                        <li class="item" ng-click="moreFilterItem('ts')">特色</li>
-                        <li class="item" ng-click="moreFilterItem('sm')">售卖状态</li>
-
-                      </ul>
-                    </div>
-                    <div class="col-67">
-                      <ul class="list">
-                        <li class="item" style="border-left:1px solid #d1d1d1;" ng-repeat="item in moreItems" ng-click="filterZt(item.lx,item.id)">{{item.name}}</li>
-                      </ul>
-                      <button class="button button-energized" style="margin: 1em 0;">确定</button>
+                    <div class="filter_header" ng-init="filter">
+                        <div class="row">
+                            <h4 class="col filter_cate" ng-repeat="ft in filter | limitTo:4 track by $index" ng-click="showFilter(ft.id,ft.lx,$index)">{{filter[$index]['name']}} <i class="icon " ng-class="{true:'ion-arrow-down-b allColor', false:'ion-arrow-up-b'}[($index+1) == key]" ></i></h4>
+                            <h4 class="col" ng-click="showMoreFilter()">更多 <i class="icon"  ng-class="{true:'ion-arrow-down-b allColor', false:'ion-arrow-up-b'}[showMoreFilterBox]"></i></h4>
+                        </div>
                     </div>
 
-                  </div>
+                    <div class="filter_zt" ng-show="showFilterBox">
+                        <ul class="list">
+                            <li class="item" ng-repeat="item in items" ng-click="filterItems(item.lx,item.fid,$index)">{{item.name}}</li>
+                            <li ng-show="key == 3">
+                                <div>
+                                    自定义价格区间
+                                    <input type="text" style="border:1px solid #ddd;padding:0;display:inline-block;width:4rem;height:1.5rem;margin-top:0.5rem;margin-bottom: 0.5rem;" ng-model="min_price" placeholder="最低售价" />
+                                    -
+                                    <input type="text" style="border:1px solid #ddd;padding:0;display:inline-block;width:4rem;height:1.5rem;margin-top:0.5rem;margin-bottom: 0.5rem;" ng-model="max_price" placeholder="最高售价" />
+                                    <button class="button button-energized" style="min-height: 1.6rem;height:1.6rem;vertical-align: middle;line-height: 1.6rem;color:#666;" >提交</button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="row moreFilterBox" ng-show="showMoreFilterBox">
+                        <div class="col-33">
+                            <ul class="list">
+                                <li class="item" ng-click="moreTs(filter[4].lx)">{{filter[4].name}}</li>
+                                <li class="item" ng-repeat="moreFilter in filter" ng-if="$index>4" ng-click="moreFilterItem(moreFilter.lx)">{{moreFilter.name}}</li>
+                                <!--<li class="item" ng-click="moreFilterItem('sm')">售卖状态</li>-->
+                                <button class="button button-energized" style="margin: 1em 0;" ng-if="showTs" ng-click="submitTs()">确定</button>
+                            </ul>
+                        </div>
+                        <div class="col-67">
+                            <ul class="list" ng-if="!showTs">
+                                <li class="item" style="text-align:left;border-left:1px solid #d1d1d1;" ng-repeat="item in moreItems" ng-click="moreFilterItems(item.lx,item.fid,$index)">{{item.name}}</li>
+                            </ul>
+                            <ion-list ng-if="showTs">
+                                <ion-checkbox class="checkbox-energized" style="height:54px;border-left:1px solid #ddd;text-align: left;" ng-repeat="tsItem in ts" ng-model="tsItem.isChecked"  ng-checked="tsItem.isChecked" ng-change="getCheck(tsItem)">{{tsItem.name}}</ion-checkbox>
+                            </ion-list>
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -149,18 +162,20 @@
                   <ion-list class="list">
                     <ion-item class="item row" ng-repeat="lp in result">
                       <div class="col-33 padding">
-                      <img ng-src="{{lp.house_thumb_src}}" width="100%" />
+                          <a ui-sref="tab.house({id:{{lp.house_id}}})"><img ng-src="{{lp.house_thumb_src}}" width="100%" /></a>
                       </div>
+                        <a style="width:100%;text-decoration: none;color:#333;" href="#/tab/house/{{lp.house_id}}">
                       <div class="col-67 padding-top">
                           <h4 class="lpName" ng-bind="lp.house_name"></h4>
                           <div>
                               <span class="lpArea" ng-bind="lp.house_min_area"></span>-<span class="lpArea" ng-bind="lp.house_max_area"></span><span class="lpAreaUnit">m<sup>2</sup></span>
                           </div>
-                          <div class="featuredContainer">
+                          <div class="featuredContainer" style="">
                               <span class="lpFeatured" ng-repeat="hf in lp.house_featured track by $index" ng-style="{color: colors[$index % colors.length]}">{{hf}}</span>
                           </div>
                           <h5 class="lpAddress" ng-bind="lp.house_address"></h5>
                       </div>
+                        </a>
                     </ion-item>
                   </ion-list>
                   <ion-infinite-scroll ng-if="showLpInit.hasMore" on-infinite="loadMore()" distance="10%"></ion-infinite-scroll>

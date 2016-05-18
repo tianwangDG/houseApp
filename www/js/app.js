@@ -1,6 +1,6 @@
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform,$rootScope,$state,$ionicHistory) {
   $ionicPlatform.ready(function() {
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -11,6 +11,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       StatusBar.styleDefault();
     }
   });
+
+	$rootScope.goBack = function () {
+		$ionicHistory.goBack();
+	}
+
+	$rootScope.goToIndex = function(){
+		$state.go('tab.index');
+	};
 })
 
 .constant('appInfo', {
@@ -34,7 +42,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   $ionicConfigProvider.platform.ios.views.transition('ios');
   $ionicConfigProvider.platform.android.views.transition('android');
 
-  $compileProvider.aHrefSanitizationWhitelist(/^\s*(geo|mailto|tel|maps):/)
+  $compileProvider.aHrefSanitizationWhitelist(/^\s*(geo|mailto|tel|maps):/);
+  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|file|tel):/);
+
 
   //日期选择器
   //var datePickerObj = {
@@ -75,6 +85,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     }
   })
 
+  .state('tab.house',{
+	  url:'/house/:id',
+	  views: {
+		  'tab-index':{
+			  templateUrl: 'templates/tab-house.html',
+			  controller:'houseCtrl'
+		  }
+	  }
+  })
+
+
+
   .state('tab.car', {
       url: '/car',
       views: {
@@ -104,6 +126,46 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 		  }
 	  }
   });
+
+
+
+	$stateProvider
+		.state('houseTab', {
+			url: '/houseTab',
+			abstract: true,
+			templateUrl: 'templates/houseTabs.html',
+			controller:'houseDetailCtrl'
+		})
+		.state('houseTab.ybj',{
+			url:'/houseYbj/:id',
+			templateUrl: 'templates/house-ybj1.html',
+			controller:'houseYbjCtrl'
+		})
+		.state('houseTab.sjt',{
+			url:'/houseSjt/:id',
+			templateUrl: 'templates/house-sjt2.html',
+			controller:'houseSjtCtrl'
+		})
+		.state('houseTab.zsl',{
+			url:'/houseZsl',
+			templateUrl: 'templates/house-zsl3.html',
+			controller:'houseZslCtrl'
+		})
+		.state('houseTab.hx',{
+			url:'houseHx/:hxId',
+			templateUrl: 'templates/house-Hx.html',
+			controller: 'houseHxCtrl'
+		})
+		.state('houseTab.ld',{
+			url:'/houseLd',
+			templateUrl: 'templates/house-Ld.html',
+			controller:'houseLdCtrl'
+		})
+		.state('houseTab.zb',{
+			url:'/houseZb',
+			templateUrl: 'templates/house-zb4.html',
+			controller:'houseZbCtrl'
+		})
 
   $urlRouterProvider.otherwise('/tab/index');
 

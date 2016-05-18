@@ -1,0 +1,41 @@
+<ion-view hide-nav-bar="true" style="background-color: #f8f8f8;">
+  <div class="bar bar-header">
+    <button class="button button-icon icon ion-ios-arrow-left" ng-click="goBack()"></button>
+    <div class="h1 title" style="font-family: '华文细黑';">楼栋</div>
+  </div>
+
+  <ion-content class="has-header" style="height:54%;background-color: #fff;" scroll="false">
+    <ion-scroll  direction="xy" id="map_content" style="width:100%;height:100%; overflow: scroll;" min-zoom="0.3" max-zoom="2" zooming="true">
+      <div style="width:1600px;height:1249px;background: url('img/house/ld.jpg')">
+        <div class="" ng-repeat="ldLabel in map.ld">
+            <div class="ldLabel" ng-style="{top: (ldLabel.y - 50)  + 'px',left: (ldLabel.x - 44) + 'px'}">
+              {{ldLabel.ldh}}
+              <div class="hxLabel">
+                <p ng-repeat="hx in ldLabel.hx">{{hx.title}}</p>
+              </div>
+            </div>
+        </div>
+      </div>
+    </ion-scroll>
+  </ion-content>
+  <div style="position:absolute;top:64%;left:5%;width:90%;height:26%;padding:1.2em;background-color: #fff;border-radius: .5em;">
+    <ion-slides options="options" slider="slider" style="height:100%;">
+      <ion-slide-page ng-repeat="ld in map.ld" >
+        <p style="font-size: 1.1em;">楼栋：<span ng-bind="ld.ldh"></span></p>
+        <p style="font-size: 1.1em;">户型：<span ng-repeat="hx in ld.hx">{{hx.title}}&nbsp;&nbsp;</span></p>
+        <p style="font-size: 1.1em;"><span>{{ld.dy}}</span>&nbsp;&nbsp;<span>{{ld.lc}}</span>&nbsp;&nbsp;<span>{{ld.hs}}</span></p>
+      </ion-slide-page>
+    </ion-slides>
+  </div>
+
+</ion-view>
+<ion-tabs class="tabs-icon-top"  style="background-color: #000 !important;">
+  <ion-tab title="样板间" icon-on="ybjOn" icon-off="ybj" href="#/houseDetail">
+  </ion-tab>
+  <ion-tab title="实景图" icon-on="sjtOn" icon-off="sjt" href="#/houseSjt">
+  </ion-tab>
+  <ion-tab title="在售楼" icon-on="zslOn" icon-off="zsl" href="#/houseZsl">
+  </ion-tab>
+  <ion-tab title="周边" icon-on="zbOn" icon-off="zb"  href="#/houseZb">
+  </ion-tab>
+</ion-tabs>
