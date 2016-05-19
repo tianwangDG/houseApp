@@ -8,9 +8,9 @@
   <div style="margin-top:44px;height:33vh;background-color: #fff;padding-top:1px;">
     <h4 style="padding-left:1em;font-size: 1.2em;font-family: '华文细黑';">户型介绍</h4>
     <ion-slides options="options" slider="slider" style="width:100%">
-      <ion-slide-page ng-repeat="slider in sliderArr" ng-click="goToHx($index)">
-        <img ng-src="{{slider.img}}" alt="" style="border:1px solid #ddd;" />
-        <p style="margin:0;" ng-bind-html="slider.name"></p>
+      <ion-slide-page ng-repeat="slider in sliderArr" ng-click="goToHx(slider.apartment_id)">
+        <img ng-src="{{slider.image}}" alt="" style="border:1px solid #ddd;" />
+        <p style="margin:0;" ng-bind="slider.apartment_title"></p>
         <!--<p style="margin:0;">售价：<span style="color:#f62e2e;font-weight: 700;" ng-bind="slider.price"></span></p>-->
         <!--<p>栋号：{{slider.ldId}}</p>-->
         <!--<p style="margin:0;" ng-bind-html="slider.label"></p>-->
@@ -20,22 +20,12 @@
 
   <ion-content style="top:52%;height:44vh;background-color: #fff;" scroll="false">
     <h4 style="padding-left:1em;font-size: 1.2em;font-family: '华文细黑';">楼栋信息</h4>
-    <ion-scroll  direction="xy" id="map_c ontent" style="width:100%;height:100%; overflow: scroll;" min-zoom="0.3" max-zoom="2" zooming="true">
-      <div style="width:1600px;height:1249px;background: url('img/house/ld.jpg')" ng-click="goToLd()">
-        <div class="ldLabel" ng-repeat="ldLabel in map.ld" ng-style="{top: (ldLabel.y - 50)  + 'px',left: (ldLabel.x - 44) + 'px'}">{{ldLabel.ldh}}</div>
+    <ion-scroll  direction="xy" id="map_c content" style="width:100%;height:100%; overflow: scroll;" min-zoom="0.3" max-zoom="2" zooming="true">
+      <div style="background: url({{lpInfo.house_distribution_image_source_url}})"  ng-style="{width:map.px + 'px',height: map.py + 'px'}" ng-click="goToLd()">
+        <div class="ldLabel" ng-repeat="ldLabel in map.ld" ng-style="{top: (ldLabel.building_position_y - 50)  + 'px',left: (ldLabel.building_position_x - 44) + 'px'}">{{ldLabel.building_name}}</div>
       </div>
     </ion-scroll>
   </ion-content>
 
 
 </ion-view>
-<ion-tabs class="tabs-icon-top"  style="background-color: #000 !important;">
-  <ion-tab title="样板间" icon-on="ybjOn" icon-off="ybj" href="#/houseDetail">
-  </ion-tab>
-  <ion-tab title="实景图" icon-on="sjtOn" icon-off="sjt" href="#/houseSjt">
-  </ion-tab>
-  <ion-tab title="在售楼" icon-on="zslOn" icon-off="zsl" href="#/houseZsl">
-  </ion-tab>
-  <ion-tab title="周边" icon-on="zbOn" icon-off="zb"  href="#/houseZb">
-  </ion-tab>
-</ion-tabs>

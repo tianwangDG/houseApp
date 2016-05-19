@@ -1,4 +1,4 @@
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova'])
 
 .run(function($ionicPlatform,$rootScope,$state,$ionicHistory) {
   $ionicPlatform.ready(function() {
@@ -137,34 +137,58 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 			controller:'houseDetailCtrl'
 		})
 		.state('houseTab.ybj',{
-			url:'/houseYbj/:id',
-			templateUrl: 'templates/house-ybj1.html',
-			controller:'houseYbjCtrl'
+			url:'/houseYbj/:house_id',
+            views: {
+              'house-ybj':{
+                templateUrl: 'templates/house-ybj1.html',
+                controller: 'houseYbjCtrl'
+              }
+            }
 		})
 		.state('houseTab.sjt',{
-			url:'/houseSjt/:id',
-			templateUrl: 'templates/house-sjt2.html',
-			controller:'houseSjtCtrl'
+			url:'/houseSjt/:house_id',
+            views: {
+              'house-sjt':{
+                templateUrl: 'templates/house-sjt2.html',
+                controller: 'houseSjtCtrl'
+              }
+            }
 		})
 		.state('houseTab.zsl',{
-			url:'/houseZsl',
-			templateUrl: 'templates/house-zsl3.html',
-			controller:'houseZslCtrl'
+			url:'/houseZsl/:house_id',
+            views: {
+              'house-zsl':{
+                templateUrl: 'templates/house-zsl3.html',
+                controller: 'houseZslCtrl'
+              }
+            }
 		})
 		.state('houseTab.hx',{
-			url:'houseHx/:hxId',
-			templateUrl: 'templates/house-Hx.html',
-			controller: 'houseHxCtrl'
+			url:'/houseHx/:hxId:house_id',
+            views: {
+              'house-zsl':{
+                templateUrl: 'templates/house-Hx.html',
+                controller: 'houseHxCtrl'
+              }
+            }
 		})
 		.state('houseTab.ld',{
-			url:'/houseLd',
-			templateUrl: 'templates/house-Ld.html',
-			controller:'houseLdCtrl'
+			url:'/houseLd/:house_id',
+            views: {
+              'house-zsl':{
+                templateUrl: 'templates/house-Ld.html',
+                controller: 'houseLdCtrl'
+              }
+            }
 		})
 		.state('houseTab.zb',{
 			url:'/houseZb',
-			templateUrl: 'templates/house-zb4.html',
-			controller:'houseZbCtrl'
+            views: {
+              'house-zb':{
+                templateUrl: 'templates/house-zb4.html',
+                controller: 'houseZbCtrl'
+              }
+            }
 		})
 
   $urlRouterProvider.otherwise('/tab/index');

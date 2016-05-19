@@ -327,7 +327,133 @@
 
 
 
+/*多视窗幻灯片*/
+.swiper-pagination {margin:0 auto;text-align: center;width:100%;margin-top: 6px;}
+.swiper-pagination span{margin:0 4px;}
 
+/*楼栋标签*/
+.ldLabel{display:block;position: absolute;z-index: 9999;background-color: #ef473a;color:#fff;padding:.5em 1em; border-radius: 4px;width:6em;text-align: center;}
+.ldLabel:before{position: relative; width: 6rem; height: 3rem; background: #ef473a; padding-top: 1rem;}
+.ldLabel:after{content: ''; position: absolute; top: 100%; left: 50%; transform: translate(-50%,-50%) rotate(45deg); -moz-transform: translate(-50%,-50%) rotate(45deg); -webkit-transform: translate(-50%,-50%) rotate(45deg); background: #ef473a; height: 1rem; width: 1rem;}
+
+.hxLabel {display: block;position: absolute;top:3.6em;left:0;color:#000;background-color: rgba(256,256,256,.8);width:6em;padding:.5em;border-radius: .2em;}
+.hxLabel p{color:rgba(0,0,0,1);}
+
+
+/*周边*/
+.tabs .tab-item .icon.zbxx{
+    margin-top:4px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 50%;
+    background-image: url('../img/house/zbicon/zbxx.png');
+    background-size:contain;
+}
+.tabs .tab-item .icon.zbcs{
+    margin-top:4px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 50%;
+    background-image: url('../img/house/zbicon/zbcs.png');
+    background-size:contain;
+}
+.tabs .tab-item .icon.zbdt{
+    margin-top:4px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 50%;
+    background-image: url('../img/house/zbicon/zbdt.png');
+    background-size:contain;
+}
+.tabs .tab-item .icon.zbjd{
+    margin-top:4px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 50%;
+    background-image: url('../img/house/zbicon/zbjd.png');
+    background-size:contain;
+}
+.tabs .tab-item .icon.zbsc{
+    margin-top:4px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 50%;
+    background-image: url('../img/house/zbicon/zbsc.png');
+    background-size:contain;
+}
+.tabs .tab-item .icon.zbyy{
+    margin-top:4px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 50%;
+    background-image: url('../img/house/zbicon/zbyy.png');
+    background-size:contain;
+}
+.tabs .tab-item .icon.zbms{
+    margin-top:4px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 50%;
+    background-image: url('../img/house/zbicon/zbms.png');
+    background-size:contain;
+}
+
+.tabs .tab-item .icon.zbxxOn{
+    margin-top:4px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 50%;
+    background-image: url('../img/house/zbicon/zbxxOn.png');
+    background-size:contain;
+}
+.tabs .tab-item .icon.zbcsOn{
+    margin-top:4px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 50%;
+    background-image: url('../img/house/zbicon/zbcsOn.png');
+    background-size:contain;
+}
+.tabs .tab-item .icon.zbdtOn{
+    margin-top:4px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 50%;
+    background-image: url('../img/house/zbicon/zbdtOn.png');
+    background-size:contain;
+}
+.tabs .tab-item .icon.zbjdOn{
+    margin-top:4px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 50%;
+    background-image: url('../img/house/zbicon/zbjdOn.png');
+    background-size:contain;
+}
+.tabs .tab-item .icon.zbscOn{
+    margin-top:4px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 50%;
+    background-image: url('../img/house/zbicon/zbscOn.png');
+    background-size:contain;
+}
+.tabs .tab-item .icon.zbyyOn{
+    margin-top:4px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 50%;
+    background-image: url('../img/house/zbicon/zbyyOn.png');
+    background-size:contain;
+}
+.tabs .tab-item .icon.zbmsOn{
+    margin-top:4px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 50%;
+    background-image: url('../img/house/zbicon/zbmsOn.png');
+    background-size:contain;
+}
 
 
 

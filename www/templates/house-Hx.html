@@ -1,29 +1,23 @@
 <ion-view hide-nav-bar="true" style="background-color: #f8f8f8;">
   <div class="bar bar-header">
     <button class="button button-icon icon ion-ios-arrow-left" ng-click="goBack()"></button>
-    <div class="h1 title" style="font-family: '华文细黑';">碧湖东岸</div>
+    <div class="h1 title" style="font-family: '华文细黑';">{{lpInfo.house_name}}</div>
   </div>
 
   <ion-content class="has-header" style="" scroll="false">
     <div style="background-color: #fff;">
-      <img ng-src="{{hx.img}}" style="display:block;width:100%; height:auto;" alt="" />
+      <img ng-src="{{hxInfo.image}}" style="display:block;width:100%; height:auto;" alt="" />
     </div>
     <div style="margin-top:1em;padding:1em;">
-      <p style="font-family: '华文细黑';font-size: 1.2em;" ng-bind="hx.name"></p>
-      <p style="font-family: '华文细黑';font-size: 1.2em;">售价：<span style="color:#f62e2e;" ng-bind="hx.price"></span></p>
+      <p style="font-family: '华文细黑';font-size: 1.2em;" ng-bind="hxInfo.apartment_title"></p>
+      <p style="font-family: '华文细黑';font-size: 1.2em;">面积：<span style="color:#f62e2e;">{{hxInfo.apartment_area}} m<sup>2</sup></span></p>
+      <p style="font-family: '华文细黑';font-size: 1.2em;">售价：<span style="color:#f62e2e;">{{hxInfo.apartment_price/10000}} 万</span></p>
       <p style="font-family: '华文细黑';font-size: 1.2em;" ng-bind-html="hx.label"></p>
+      <div>
+        <span class="lpFeatured" ng-if="hxInfo.apartment_featured_one" ng-bind="hxInfo.apartment_featured_one"></span>
+        <span class="lpFeatured" ng-if="hxInfo.apartment_featured_two" ng-bind="hxInfo.apartment_featured_two"></span>
+        <span class="lpFeatured" ng-if="hxInfo.apartment_featured_three" ng-bind="hxInfo.apartment_featured_three"></span>
+      </div>
     </div>
   </ion-content>
-
-
 </ion-view>
-<ion-tabs class="tabs-icon-top"  style="background-color: #000 !important;">
-  <ion-tab title="样板间" icon-on="ybjOn" icon-off="ybj" href="#/houseDetail">
-  </ion-tab>
-  <ion-tab title="实景图" icon-on="sjtOn" icon-off="sjt" href="#/houseSjt">
-  </ion-tab>
-  <ion-tab title="在售楼" icon-on="zslOn" icon-off="zsl" href="#/houseZsl">
-  </ion-tab>
-  <ion-tab title="周边" icon-on="zbOn" icon-off="zb"  href="#/houseZb">
-  </ion-tab>
-</ion-tabs>

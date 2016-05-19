@@ -1,29 +1,14 @@
-<!--<ion-tabs class="tabs-icon-top tabs-color-active-positive">-->
-  <!--<ion-tab title="样板间" icon-off="lp" icon-on="lp" href="#/houseTab/houseYbj">-->
-    <!--<ion-nav-view></ion-nav-view>-->
-  <!--</ion-tab>-->
-  <!--<ion-tab title="实景图" icon-off="dd" icon-on="dd" href="#/houseTab/houseSjt">-->
-    <!--<ion-nav-view></ion-nav-view>-->
-  <!--</ion-tab>-->
-  <!--<ion-tab title="在售楼" icon-off="gz" icon-on="gz" href="#/houseTab/houseZsl">-->
-    <!--<ion-nav-view></ion-nav-view>-->
-  <!--</ion-tab>-->
-  <!--<ion-tab title="周边" icon-off="xx" icon-on="xx" href="#/houseTab/houseZb">-->
-    <!--<ion-nav-view></ion-nav-view>-->
-  <!--</ion-tab>-->
-<!--</ion-tabs>-->
-
 <ion-tabs class="tabs-icon-top tabs-color-active-positive">
   <ion-tab title="样板间" icon-off="ybj" icon-on="ybjOn" ng-click="gotoYbj()">
-    <ion-nav-view></ion-nav-view>
+    <ion-nav-view name="house-ybj"></ion-nav-view>
   </ion-tab>
   <ion-tab title="实景图" icon-off="sjt" icon-on="sjtOn"  ng-click="gotoSjt()">
-    <ion-nav-view></ion-nav-view>
+    <ion-nav-view name="house-sjt"></ion-nav-view>
   </ion-tab>
   <ion-tab title="在售楼" icon-off="zsl" icon-on="zslOn"  ng-click="gotoZsl()">
-    <ion-nav-view></ion-nav-view>
+    <ion-nav-view name="house-zsl"></ion-nav-view>
   </ion-tab>
   <ion-tab title="周边" icon-off="zb" icon-on="zbOn"  ng-click="gotoZb()">
-    <ion-nav-view></ion-nav-view>
+    <ion-nav-view name="house-zb"></ion-nav-view>
   </ion-tab>
 </ion-tabs>

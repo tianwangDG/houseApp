@@ -236,7 +236,7 @@ angular.module('starter.controllers', [])
 	});
 
 	$scope.onSwipeUp = function(){
-		$state.go('houseTab.ybj',{id:house_id});
+		$state.go('houseTab.ybj', { house_id: house_id });
 	}
 
 })
@@ -246,17 +246,23 @@ angular.module('starter.controllers', [])
 
 .controller('houseDetailCtrl', function($scope,$rootScope,$state){
 	$scope.gotoYbj = function(){
-		$state.go('houseTab.ybj',{id:$rootScope.id});
+		$state.go('houseTab.ybj',{house_id:$rootScope.id});
 	}
 	$scope.gotoSjt = function(){
-		$state.go('houseTab.sjt',{id:$rootScope.id});
+		$state.go('houseTab.sjt',{house_id:$rootScope.id});
+	}
+	$scope.gotoZsl = function(){
+		$state.go('houseTab.zsl',{house_id:$rootScope.id});
+	}
+	$scope.gotoZb = function(){
+		$state.go('houseTab.zb',{house_id:$rootScope.id});
 	}
 })
 
 
 .controller('houseYbjCtrl', function($scope,$rootScope,$stateParams,HouseDetail,$ionicSlideBoxDelegate,$state){
 	//console.log($stateParams.id);
-	var house_id = parseInt($stateParams.id);
+	var house_id = parseInt($stateParams.house_id);
 	if(house_id){
 		$scope.house_id = house_id;
 		$rootScope.id = house_id;
@@ -286,7 +292,6 @@ angular.module('starter.controllers', [])
 
 .controller('houseSjtCtrl', function($scope,$rootScope,$stateParams,HouseDetail,$ionicSlideBoxDelegate,$state){
 	//console.log($rootScope.id);
-
 	var house_id = $rootScope.id;
 	$scope.house_id = house_id;
 	$rootScope.id = $scope.house_id;
@@ -309,8 +314,176 @@ angular.module('starter.controllers', [])
 })
 
 
+.controller('houseZslCtrl', function($scope,$rootScope,$stateParams,HouseDetail,$ionicSlideBoxDelegate, $ionicScrollDelegate, $window, $state) {
+	var house_id = $rootScope.id;
+
+	HouseDetail.get({id:house_id}).$promise.then(function(response){
+		$scope.lpInfo = response.data;
+		$scope.sliderArr = $scope.lpInfo.apartments;
+
+		$scope. map = {
+			ld: $scope.lpInfo.buildings,
+			px: $scope.lpInfo.house_distribution_image_origin_width,
+			py: $scope.lpInfo.house_distribution_image_origin_height
+		}
+		console.log($scope.lpInfo);
+		console.log($scope.sliderArr);
+		console.log($scope.map);
+		$ionicSlideBoxDelegate.update();
+	});
+
+	$scope.options = {
+		loop: true,
+		effect: 'slide',
+		speed: 500,
+		spaceBetween:20,
+		slidesPerView:2,
+		initialSlide:1,
+		slidesPerColumn:0,
+		slidesPerColumnFill:'column',
+		centeredSlides:true,
+		slidesOffsetBefore:0,
+		slidesOffsetAfter:0,
+		paginationHide:true,
+
+		onInit: function(swiper){
+			console.log(swiper.activeIndex);
+		},
+
+		onSlideChangeEnd: function(swiper){
+			console.log('The active index is ' + ( swiper.activeIndex ));
+
+			//if(swiper.activeIndex){
+			//	$scope.onSliderShow(swiper.activeIndex-1);
+			//}else{
+			//	$scope.onSliderShow(0);
+			//}
 
 
+		}
+	}
+
+
+	$scope.onSliderShow = function(index){
+
+		var ldId = parseInt($scope.sliderArr[index-1].building_id) - 1;
+		console.log(ldId);
+
+		//console.log($scope.map.ld);
+		//console.log($scope.map.ld[ldId].x);
+		//console.log($scope.map.ld[ldId].y);
+
+		$scope.changeXY($scope.map.ld[ldId].building_position_x - $window.screen.availWidth/2 ,$scope.map.ld[ldId].building_position_y - 150);
+
+	}
+
+	setTimeout(function(){
+		$scope.$broadcast('scroll.resize');
+	}, 2000);
+
+	$scope.ldLabels = [];
+
+	$scope.changeXY = function(x,y){
+		$ionicScrollDelegate.scrollTo(x,y);
+	}
+
+	$scope.goToHx = function(index){
+		//console.log(index);
+		//console.log($scope.sliderArr[index]);
+		//console.log($scope.sliderArr[index].id);
+		$state.go('houseTab.hx', {hxId:index,house_id: $rootScope.id});
+	}
+
+	$scope.goToLd = function(){
+		$state.go('houseTab.ld', {house_id: $rootScope.id});
+	}
+})
+
+
+.controller('houseHxCtrl', function($scope, $stateParams, HouseDetail, $ionicHistory){
+	console.log($stateParams);
+	$scope.hx_id = parseInt($stateParams.hxId);
+	$scope.house_id = parseInt($stateParams.house_id);
+
+	HouseDetail.get({id:$scope.house_id}).$promise.then(function(response){
+		$scope.lpInfo = response.data;
+		console.log($scope.lpInfo);
+
+		$scope.lpInfo.apartments.forEach(function(item){
+			if(item.apartment_id == $scope.hx_id){
+				$scope.hxInfo = item;
+			}
+		})
+
+	});
+
+})
+
+
+.controller('houseLdCtrl', function($scope, $stateParams, HouseDetail, $ionicHistory, $ionicScrollDelegate, $window){
+	$scope.house_id = parseInt($stateParams.house_id);
+
+	HouseDetail.get({id:$scope.house_id}).$promise.then(function(response){
+		$scope.lpInfo = response.data;
+		$scope. map = {
+			ld: $scope.lpInfo.buildings,
+			px: $scope.lpInfo.house_distribution_image_origin_width,
+			py: $scope.lpInfo.house_distribution_image_origin_height
+		}
+	});
+})
+
+
+
+	.controller('houseZbCtrl', function($scope, $stateParams, $ionicHistory, $rootScope, $http, $ionicPopup, $cordovaGeolocation){
+
+		$scope.goBack = function(){
+			$ionicHistory.goBack();
+		};
+
+		$scope.zbpts = [
+			{id:1,name:"zbxx",type:"学校",icon:"zbxx",iconOn:"zbxxOn",imgOff:"img/zbicon/zbxx.png",imgOn:"img/zbicon/zbxxOn.png"},
+			{id:2,name:"zbcs",type:"超市",icon:"zbcs",iconOn:"zbcsOn",imgOff:"img/zbicon/zbcs.png",imgOn:"img/zbicon/zbcsOn.png"},
+			{id:3,name:"zbdt",type:"地铁",icon:"zbdt",iconOn:"zbdtOn",imgOff:"img/zbicon/zbdt.png",imgOn:"img/zbicon/zbdtOn.png"},
+			{id:4,name:"zbjd",type:"酒店",icon:"zbjd",iconOn:"zbjdOn",imgOff:"img/zbicon/zbjd.png",imgOn:"img/zbicon/zbjdOn.png"},
+			{id:5,name:"zbsc",type:"市场",icon:"zbsc",iconOn:"zbscOn",imgOff:"img/zbicon/zbsc.png",imgOn:"img/zbicon/zbscOn.png"},
+			{id:6,name:"zbyy",type:"医院",icon:"zbyy",iconOn:"zbyyOn",imgOff:"img/zbicon/zbyy.png",imgOn:"img/zbicon/zbyyOn.png"},
+			{id:7,name:"zbms",type:"美食",icon:"zbms",iconOn:"zbmsOn",imgOff:"img/zbicon/zbms.png",imgOn:"img/zbicon/zbmsOn.png"}
+		];
+
+		$scope.popupBox = function(title,text,button){
+			return $ionicPopup.alert({
+				title: title,
+				template: text,
+				okText: button
+			});
+		};
+
+		$scope.getZbMap = function(type,lon,lat){
+			var map = new BMap.Map("allmap");
+			map.centerAndZoom(new BMap.Point(lon, lat), 14);
+
+			var local = new BMap.LocalSearch(map, {
+				renderOptions:{map: map}
+			});
+			local.searchInBounds(type, map.getBounds());
+
+			map.addEventListener("dragend",function(){
+				map.clearOverlays();
+				local.searchInBounds(type, map.getBounds());
+			});
+		}
+
+		$scope.getPosition = function(type){
+			if(type == undefined){
+				var type = $scope.zbpts[0].type;
+			}
+			$scope.getZbMap(type,113.76724360543,23.024699455239);
+		}
+
+		$scope.getPosition();
+
+	})
 
 
 
