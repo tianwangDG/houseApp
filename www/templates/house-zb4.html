@@ -1,7 +1,7 @@
 <div class="bar bar-header">
 
   <button class="button button-icon icon ion-ios-arrow-left" ng-click="goBack()"></button>
-  <h1 class="title">碧湖东岸</h1>
+  <h1 class="title">{{house_name}}</h1>
   <button class="button button-clear" ng-click="getPosition()"><i class="icon ion-ios-navigate-outline"></i></button>
 </div>
 <ion-view hide-nav-bar="true">
@@ -20,5 +20,5 @@
   <!--</ion-footer-bar>-->
 </ion-view>
 <ion-tabs class="tabs-icon-top" style="background-color: #000 !important;">
-  <ion-tab ng-repeat="zbpt in zbpts" title="{{zbpt.type}}" icon-on="{{zbpt.iconOn}}" icon-off="{{zbpt.icon}}" ng-click="getPosition(zbpt.type)"></ion-tab>
+    <ion-tab ng-repeat="zbpt in zbpts" title="{{zbpt.type}}" icon-on="{{zbpt.iconOn}}" icon-off="{{zbpt.icon}}" ng-click="getPosition(zbpt.type,lat,lon)"></ion-tab>
 </ion-tabs>

@@ -1,6 +1,11 @@
 angular.module('starter.controllers', [])
 
 .controller('indexCtrl', function($scope, $rootScope, $state, $ionicSlideBoxDelegate,$http, appInfo, Slider, House) {
+
+	$scope.goToMemberInfo = function(){
+		$state.go('memberInfo');
+	};
+
 	//显示滑动图片
 	Slider.get().$promise.then(function(response){
 		$scope.sliders = response.data;
@@ -255,7 +260,8 @@ angular.module('starter.controllers', [])
 		$state.go('houseTab.zsl',{house_id:$rootScope.id});
 	}
 	$scope.gotoZb = function(){
-		$state.go('houseTab.zb',{house_id:$rootScope.id});
+		//$state.go('houseTab.zb',{house_id:$rootScope.id});
+		$state.go('houseZb',{house_id:$rootScope.id});
 	}
 })
 
@@ -292,12 +298,15 @@ angular.module('starter.controllers', [])
 
 .controller('houseSjtCtrl', function($scope,$rootScope,$stateParams,HouseDetail,$ionicSlideBoxDelegate,$state){
 	//console.log($rootScope.id);
-	var house_id = $rootScope.id;
-	$scope.house_id = house_id;
-	$rootScope.id = $scope.house_id;
+	if($stateParams.house_id){
+		$scope.house_id = parseInt($stateParams.house_id);
+		$rootScope.id = $scope.house_id;
+	}else{
+		$scope.house_id = $rootScope.id;
+	}
 
 	$scope.house_featured = [];
-	HouseDetail.get({id:house_id}).$promise.then(function(response){
+	HouseDetail.get({id:$scope.house_id}).$promise.then(function(response){
 		$scope.lpInfo = response.data;
 		$ionicSlideBoxDelegate.update();
 
@@ -315,88 +324,324 @@ angular.module('starter.controllers', [])
 
 
 .controller('houseZslCtrl', function($scope,$rootScope,$stateParams,HouseDetail,$ionicSlideBoxDelegate, $ionicScrollDelegate, $window, $state) {
-	var house_id = $rootScope.id;
+	//$scope.responses = {
+	//	"data": {
+	//		"house_id": "3",
+	//		"house_create_time": "2016-05-13 06:12:01",
+	//		"house_update_time": "2016-05-18 14:53:46",
+	//		"house_sale_status": "排卡中",
+	//		"house_name": "万达公馆",
+	//		"house_limit_years": "0",
+	//		"house_featured": [
+	//			"不限",
+	//			"精装修",
+	//			"近地铁"
+	//		],
+	//		"house_type": "商铺",
+	//		"house_decoration_status": "简装",
+	//		"house_description": "品牌企业,南北对流,车位充足",
+	//		"house_recommend": "1",
+	//		"house_min_area": "100",
+	//		"house_max_area": "150",
+	//		"house_commission": "0",
+	//		"house_commission_description": "佣金描述",
+	//		"house_longtitude": "23.0269970000",
+	//		"house_latitude": "113.7582310000",
+	//		"house_plan_family": "0",
+	//		"house_parking_num": "0",
+	//		"house_address": "东莞市东城区主山村2",
+	//		"house_zone_id": "3",
+	//		"house_fee": "0.0",
+	//		"house_company": "物业公司",
+	//		"house_average_price": "10000",
+	//		"house_max_price": "850000",
+	//		"house_min_price": "1000000",
+	//		"house_discount_info": "优惠信息",
+	//		"house_discount_description": "",
+	//		"house_sales_tel": "电话号码",
+	//		"house_sales_address": "买楼地址",
+	//		"house_open_time": "2015-12-18",
+	//		"house_handing_time": "2016-05-12",
+	//		"house_volume": "",
+	//		"house_green": "",
+	//		"house_water": "",
+	//		"house_heat": "",
+	//		"house_center_distance": "",
+	//		"house_subway_distance": "",
+	//		"house_school_distance": "",
+	//		"house_hospital_distance": "",
+	//		"house_market_distance": "",
+	//		"house_distribution_pid": "2",
+	//		"house_slider_pid": "26",
+	//		"house_main_pid": "26",
+	//		"house_thumb_pid": "2",
+	//		"house_remark": "",
+	//		"house_develop_id": "1",
+	//		"house_admin_uid": "0",
+	//		"house_check_status": "0",
+	//		"house_apartment_styles": [
+	//			"一房",
+	//			"二房"
+	//		],
+	//		"house_distribution_image_source_url": "http://app.tigonetwork.com/public/img/house/ld.jpg",
+	//		"house_distribution_image_origin_width": "1600",
+	//		"house_distribution_image_origin_height": "1249",
+	//		"house_slider_src": "http://app.tigonetwork.com/public/img/sliders/slider2.jpg",
+	//		"house_main_src": "http://app.tigonetwork.com/public/img/sliders/slider2.jpg",
+	//		"house_thumb_src": "http://app.tigonetwork.com/public/img/lp/lp2.jpg",
+	//		"house_zone_name": "南城",
+	//		"sjt": [
+	//			"http://app.tigonetwork.com/public/img/sliders/slider4.jpg",
+	//			"http://app.tigonetwork.com/public/2016-05-17/573a8b4fa02ce.jpg",
+	//			"http://app.tigonetwork.com/public/2016-05-17/573a8b59a3094.jpg"
+	//		],
+	//		"ybj": [
+	//			"http://app.tigonetwork.com/public/2016-05-16/57392aed2c10c.jpg",
+	//			"http://app.tigonetwork.com/public/2016-05-16/57392af5396ab.jpg",
+	//			"http://app.tigonetwork.com/public/img/sliders/slider1.jpg"
+	//		],
+	//		"buildings": [
+	//			{
+	//				"building_id": "1",
+	//				"building_create_time": "2016-05-17 15:41:13",
+	//				"building_update_time": "2016-05-19 10:39:14",
+	//				"building_name": "第一栋",
+	//				"building_position_x": "548",
+	//				"building_position_y": "453",
+	//				"building_open_time": "2015-12-12",
+	//				"building_unit": "3",
+	//				"building_floor": "20",
+	//				"building_family": "50",
+	//				"building_remark": "第一栋哦, 嗯嗯嗯",
+	//				"house_id": "3",
+	//				"building_admin_uid": "1",
+	//				"building_check_status": "1",
+	//				"apartments": [
+	//					{
+	//						"apartment_id": "1",
+	//						"apartment_create_time": "2016-05-17 16:30:08",
+	//						"apartment_update_time": "2016-05-17 16:30:08",
+	//						"apartment_title": "三室一厅",
+	//						"apartment_room_num": "3",
+	//						"apartment_hall_num": "1",
+	//						"apartment_toilet_num": "1",
+	//						"apartment_area": "150",
+	//						"apartment_price": "2000000",
+	//						"apartment_featured_one": "大户型",
+	//						"apartment_featured_two": "朝南",
+	//						"apartment_featured_three": "低价",
+	//						"house_id": "3",
+	//						"building_id": "1",
+	//						"apartment_admin_uid": "3",
+	//						"apartment_check_status": "1",
+	//						"image": "http://app.tigonetwork.com/public/img/house/hxt/hxt1.png"
+	//					},
+	//					{
+	//						"apartment_id": "2",
+	//						"apartment_create_time": "2016-05-17 16:30:24",
+	//						"apartment_update_time": "2016-05-17 16:30:24",
+	//						"apartment_title": "三室二厅",
+	//						"apartment_room_num": "2",
+	//						"apartment_hall_num": "2",
+	//						"apartment_toilet_num": "1",
+	//						"apartment_area": "160",
+	//						"apartment_price": "2100000",
+	//						"apartment_featured_one": "大户型",
+	//						"apartment_featured_two": "朝南",
+	//						"apartment_featured_three": "高性价比",
+	//						"house_id": "3",
+	//						"building_id": "1",
+	//						"apartment_admin_uid": "3",
+	//						"apartment_check_status": "1",
+	//						"image": "http://app.tigonetwork.com/public/img/house/hxt/hxt2.png"
+	//					}
+	//				]
+	//			},
+	//			{
+	//				"building_id": "2",
+	//				"building_create_time": "2016-05-17 16:29:50",
+	//				"building_update_time": "2016-05-19 10:39:21",
+	//				"building_name": "第二栋",
+	//				"building_position_x": "830",
+	//				"building_position_y": "700",
+	//				"building_open_time": "2015-12-08",
+	//				"building_unit": "2",
+	//				"building_floor": "40",
+	//				"building_family": "80",
+	//				"building_remark": "第二栋哦, 嗯嗯嗯",
+	//				"house_id": "3",
+	//				"building_admin_uid": "1",
+	//				"building_check_status": "1",
+	//				"apartments": [
+	//					{
+	//						"apartment_id": "3",
+	//						"apartment_create_time": "2016-05-17 16:30:35",
+	//						"apartment_update_time": "2016-05-17 16:30:35",
+	//						"apartment_title": "三室二厅11",
+	//						"apartment_room_num": "1",
+	//						"apartment_hall_num": "1",
+	//						"apartment_toilet_num": "1",
+	//						"apartment_area": "100",
+	//						"apartment_price": "2110000",
+	//						"apartment_featured_one": "大户型1",
+	//						"apartment_featured_two": "朝南1",
+	//						"apartment_featured_three": "高性价比1",
+	//						"house_id": "3",
+	//						"building_id": "2",
+	//						"apartment_admin_uid": "3",
+	//						"apartment_check_status": "1",
+	//						"image": "http://app.tigonetwork.com/public/img/house/hxt/hxt3.png"
+	//					}
+	//				]
+	//			}
+	//		],
+	//		"apartments": [
+	//			{
+	//				"apartment_id": "1",
+	//				"apartment_create_time": "2016-05-17 16:30:08",
+	//				"apartment_update_time": "2016-05-17 16:30:08",
+	//				"apartment_title": "三室一厅",
+	//				"apartment_room_num": "3",
+	//				"apartment_hall_num": "1",
+	//				"apartment_toilet_num": "1",
+	//				"apartment_area": "150",
+	//				"apartment_price": "2000000",
+	//				"apartment_featured_one": "大户型",
+	//				"apartment_featured_two": "朝南",
+	//				"apartment_featured_three": "低价",
+	//				"house_id": "3",
+	//				"building_id": "1",
+	//				"apartment_admin_uid": "3",
+	//				"apartment_check_status": "1",
+	//				"image": "http://app.tigonetwork.com/public/img/house/hxt/hxt1.png"
+	//			},
+	//			{
+	//				"apartment_id": "2",
+	//				"apartment_create_time": "2016-05-17 16:30:24",
+	//				"apartment_update_time": "2016-05-17 16:30:24",
+	//				"apartment_title": "三室二厅",
+	//				"apartment_room_num": "2",
+	//				"apartment_hall_num": "2",
+	//				"apartment_toilet_num": "1",
+	//				"apartment_area": "160",
+	//				"apartment_price": "2100000",
+	//				"apartment_featured_one": "大户型",
+	//				"apartment_featured_two": "朝南",
+	//				"apartment_featured_three": "高性价比",
+	//				"house_id": "3",
+	//				"building_id": "1",
+	//				"apartment_admin_uid": "3",
+	//				"apartment_check_status": "1",
+	//				"image": "http://app.tigonetwork.com/public/img/house/hxt/hxt2.png"
+	//			},
+	//			{
+	//				"apartment_id": "3",
+	//				"apartment_create_time": "2016-05-17 16:30:35",
+	//				"apartment_update_time": "2016-05-17 16:30:35",
+	//				"apartment_title": "三室二厅11",
+	//				"apartment_room_num": "1",
+	//				"apartment_hall_num": "1",
+	//				"apartment_toilet_num": "1",
+	//				"apartment_area": "100",
+	//				"apartment_price": "2110000",
+	//				"apartment_featured_one": "大户型1",
+	//				"apartment_featured_two": "朝南1",
+	//				"apartment_featured_three": "高性价比1",
+	//				"house_id": "3",
+	//				"building_id": "2",
+	//				"apartment_admin_uid": "3",
+	//				"apartment_check_status": "1",
+	//				"image": "http://app.tigonetwork.com/public/img/house/hxt/hxt3.png"
+	//			}
+	//		],
+	//		"house_develop_name": "金湖地产"
+	//	},
+	//	"status": true
+	//};
 
-	HouseDetail.get({id:house_id}).$promise.then(function(response){
+
+	if($stateParams.house_id){
+		$scope.house_id = parseInt($stateParams.house_id);
+		$rootScope.id = $scope.house_id;
+	}else{
+		$scope.house_id = $rootScope.id;
+	}
+
+	HouseDetail.get({id:$scope.house_id}).$promise.then(function(response){
 		$scope.lpInfo = response.data;
 		$scope.sliderArr = $scope.lpInfo.apartments;
-
 		$scope. map = {
 			ld: $scope.lpInfo.buildings,
 			px: $scope.lpInfo.house_distribution_image_origin_width,
 			py: $scope.lpInfo.house_distribution_image_origin_height
 		}
-		console.log($scope.lpInfo);
-		console.log($scope.sliderArr);
-		console.log($scope.map);
-		$ionicSlideBoxDelegate.update();
+
+		$scope.onSliderShow = function(index){
+			var ldId = parseInt($scope.sliderArr[index+1].building_id);
+			$scope.map.ld.forEach(function(ldItem){
+				if(ldItem.building_id == ldId){
+					$scope.changeXY(ldItem.building_position_x - $window.screen.availWidth/2 ,ldItem.building_position_y - 150);
+				}
+			})
+		}
+
+		$scope.onSliderShow(0);
 	});
 
 	$scope.options = {
-		loop: true,
+		loop: false,
 		effect: 'slide',
 		speed: 500,
-		spaceBetween:20,
-		slidesPerView:2,
-		initialSlide:1,
-		slidesPerColumn:0,
+		spaceBetween:0,
+		slidesPerView:1,
+		initialSlide:0,
+		slidesPerColumn:1,
 		slidesPerColumnFill:'column',
 		centeredSlides:true,
 		slidesOffsetBefore:0,
 		slidesOffsetAfter:0,
-		paginationHide:true,
+		paginationHide:false,
 
-		onInit: function(swiper){
-			console.log(swiper.activeIndex);
-		},
+		//onInit: function(swiper){
+		//	swiper.onResize();
+		//	swiper.updateContainerSize()
+		//	swiper.updateSlidesSize();
+		//},
 
 		onSlideChangeEnd: function(swiper){
-			console.log('The active index is ' + ( swiper.activeIndex ));
+			//swiper.onResize();
+			//swiper.updateContainerSize()
+			//swiper.updateSlidesSize();
+			//console.log(swiper);
+			//console.log('The active index is ' + ( swiper.activeIndex ));
 
-			//if(swiper.activeIndex){
-			//	$scope.onSliderShow(swiper.activeIndex-1);
-			//}else{
-			//	$scope.onSliderShow(0);
-			//}
-
-
+			if(swiper.activeIndex){
+				$scope.onSliderShow(swiper.activeIndex-1);
+			}else{
+				$scope.onSliderShow(0);
+			}
 		}
 	}
 
-
-	$scope.onSliderShow = function(index){
-
-		var ldId = parseInt($scope.sliderArr[index-1].building_id) - 1;
-		console.log(ldId);
-
-		//console.log($scope.map.ld);
-		//console.log($scope.map.ld[ldId].x);
-		//console.log($scope.map.ld[ldId].y);
-
-		$scope.changeXY($scope.map.ld[ldId].building_position_x - $window.screen.availWidth/2 ,$scope.map.ld[ldId].building_position_y - 150);
-
-	}
 
 	setTimeout(function(){
 		$scope.$broadcast('scroll.resize');
 	}, 2000);
 
 	$scope.ldLabels = [];
-
 	$scope.changeXY = function(x,y){
 		$ionicScrollDelegate.scrollTo(x,y);
 	}
 
 	$scope.goToHx = function(index){
-		//console.log(index);
-		//console.log($scope.sliderArr[index]);
-		//console.log($scope.sliderArr[index].id);
-		$state.go('houseTab.hx', {hxId:index,house_id: $rootScope.id});
+		$state.go('houseTab.hx', {hxId:index,house_id: $scope.house_id});
 	}
 
 	$scope.goToLd = function(){
-		$state.go('houseTab.ld', {house_id: $rootScope.id});
+		$state.go('houseTab.ld', {house_id: $scope.house_id});
 	}
+
+
 })
 
 
@@ -413,14 +658,15 @@ angular.module('starter.controllers', [])
 			if(item.apartment_id == $scope.hx_id){
 				$scope.hxInfo = item;
 			}
-		})
+		});
+
 
 	});
 
 })
 
 
-.controller('houseLdCtrl', function($scope, $stateParams, HouseDetail, $ionicHistory, $ionicScrollDelegate, $window){
+.controller('houseLdCtrl', function($scope, $rootScope, $stateParams, HouseDetail, $ionicHistory, $ionicSlideBoxDelegate, $ionicScrollDelegate, $window){
 	$scope.house_id = parseInt($stateParams.house_id);
 
 	HouseDetail.get({id:$scope.house_id}).$promise.then(function(response){
@@ -429,13 +675,59 @@ angular.module('starter.controllers', [])
 			ld: $scope.lpInfo.buildings,
 			px: $scope.lpInfo.house_distribution_image_origin_width,
 			py: $scope.lpInfo.house_distribution_image_origin_height
+		};
+
+		$scope.onSliderShow = function(index){
+			$scope.changeXY($scope.map.ld[index].building_position_x - $window.screen.availWidth/2 ,$scope.map.ld[index].building_position_y - 150);
 		}
+
+		$scope.onSliderShow(0);
+
 	});
+
+	$scope.options = {
+		loop: false,
+		effect: 'slide',
+		speed: 500,
+		spaceBetween:30,
+		slidesPerView:1,
+		initialSlide:0,
+		slidesPerColumn:1,
+		slidesPerColumnFill:'column',
+		centeredSlides:true,
+		preloadImages:true,
+		paginationHide:false,
+		paginationClickable: true,
+
+		onInit: function(swiper){
+			//$scope.onSliderShow(0);
+		},
+
+		onSlideChangeEnd: function(swiper){
+			//console.log('The active index is ' + (swiper.activeIndex));
+			if(swiper.activeIndex){
+				$scope.onSliderShow(swiper.activeIndex);
+			}else{
+				$scope.onSliderShow(0);
+			}
+		}
+	};
+
+	$scope.changeXY = function(x,y){
+		$ionicScrollDelegate.scrollTo(x,y);
+	}
+
 })
 
 
 
-	.controller('houseZbCtrl', function($scope, $stateParams, $ionicHistory, $rootScope, $http, $ionicPopup, $cordovaGeolocation){
+	.controller('houseZbCtrl', function($scope, $stateParams, $ionicHistory, HouseDetail, zbInfo, $rootScope, $http, $ionicPopup, $cordovaGeolocation){
+		if($stateParams.house_id){
+			$scope.house_id = parseInt($stateParams.house_id);
+			$rootScope.id = $scope.house_id;
+		}else{
+			$scope.house_id = $rootScope.id;
+		}
 
 		$scope.goBack = function(){
 			$ionicHistory.goBack();
@@ -450,6 +742,8 @@ angular.module('starter.controllers', [])
 			{id:6,name:"zbyy",type:"医院",icon:"zbyy",iconOn:"zbyyOn",imgOff:"img/zbicon/zbyy.png",imgOn:"img/zbicon/zbyyOn.png"},
 			{id:7,name:"zbms",type:"美食",icon:"zbms",iconOn:"zbmsOn",imgOff:"img/zbicon/zbms.png",imgOn:"img/zbicon/zbmsOn.png"}
 		];
+
+		$scope.house_name = zbInfo.house_name;
 
 		$scope.popupBox = function(title,text,button){
 			return $ionicPopup.alert({
@@ -474,11 +768,11 @@ angular.module('starter.controllers', [])
 			});
 		}
 
-		$scope.getPosition = function(type){
-			if(type == undefined){
+		$scope.getPosition = function(type) {
+			if (type == undefined) {
 				var type = $scope.zbpts[0].type;
 			}
-			$scope.getZbMap(type,113.76724360543,23.024699455239);
+			$scope.getZbMap(type, zbInfo.lat, zbInfo.lon);
 		}
 
 		$scope.getPosition();

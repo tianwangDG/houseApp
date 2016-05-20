@@ -4,13 +4,12 @@
     <div class="h1 title" style="font-family: '华文细黑';">碧湖东岸</div>
   </div>
 
-
-  <div style="margin-top:44px;height:33vh;background-color: #fff;padding-top:1px;">
+  <div style="margin-top:44px;height:36vh;background-color: #fff;padding-top:1px;">
     <h4 style="padding-left:1em;font-size: 1.2em;font-family: '华文细黑';">户型介绍</h4>
     <ion-slides options="options" slider="slider" style="width:100%">
-      <ion-slide-page ng-repeat="slider in sliderArr" ng-click="goToHx(slider.apartment_id)">
-        <img ng-src="{{slider.image}}" alt="" style="border:1px solid #ddd;" />
-        <p style="margin:0;" ng-bind="slider.apartment_title"></p>
+      <ion-slide-page ng-repeat="slider in sliderArr" ng-click="goToHx(slider.apartment_id)" style="background-color: #fff;padding-bottom: 3.6rem;">
+        <img ng-src="{{slider.image}}" alt="{{slider.apartment_title}}" style="border:1px solid #ddd; display: block;margin:0 auto;" />
+        <p style="text-align: center;padding: 0.4rem 0;" ng-bind="slider.apartment_title"></p>
         <!--<p style="margin:0;">售价：<span style="color:#f62e2e;font-weight: 700;" ng-bind="slider.price"></span></p>-->
         <!--<p>栋号：{{slider.ldId}}</p>-->
         <!--<p style="margin:0;" ng-bind-html="slider.label"></p>-->

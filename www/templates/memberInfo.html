@@ -1,0 +1,291 @@
+<ion-view hide-nav-bar="true" style="background-color: #f8f8f8;">
+  <div class="bar bar-header">
+    <button class="button button-icon icon ion-ios-arrow-left" ng-click="goBackIndex()"></button>
+    <div class="h1 title" style="font-family: '华文细黑';">用户信息</div>
+  </div>
+  <ion-content class="has-header">
+    <div class="list">
+      <a class="item item-icon-right" href="#"  style="display:block;border:none;width:100vw;">
+        <div style="display: table-cell;vertical-align: middle;"><span style="display: table-cell;">头像</span></div>
+        <div style="display: table-cell;vertical-align: middle;width:100%;padding:.8em 0;" ng-click="modifyTx()"><img src="img/tx.jpg" style="display:block;width:60px;height:60px;border-radius: 60px;float:right;" /></div>
+        <i class="icon ion-ios-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="list">
+      <a class="item item-icon-right" href="#"  style="display:block;border:none;width:100vw;" ng-click="modifyNick()">
+        昵称
+        <span class="item-note">
+          波西
+        </span>
+        <i class="icon ion-ios-arrow-right"></i>
+      </a>
+      <a class="item item-icon-right" href="#"  style="display:block;border:none;width:100vw;" ng-click="modifyGender()">
+        性别
+        <span class="item-note">
+          男
+        </span>
+        <i class="icon ion-ios-arrow-right"></i>
+      </a>
+      <a class="item item-icon-right" href="#"  style="display:block;border:none;width:100vw;">
+        生日
+        <span class="item-note">
+          1990-12-23
+        </span>
+        <i class="icon ion-ios-arrow-right"></i>
+      </a>
+      <a class="item item-icon-right" href="#"  style="display:block;border:none;width:100vw;" ng-click="modifyTel()">
+        手机号码
+        <span class="item-note">
+          18503045126
+        </span>
+        <i class="icon ion-ios-arrow-right"></i>
+      </a>
+      <a class="item item-icon-right" href="#"  style="display:block;border:none;width:100vw;" ng-click="modifySignature()">
+        个性签名
+        <span class="item-note">
+          加油吧，骚年
+        </span>
+        <i class="icon ion-ios-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="list">
+      <a class="item item-icon-right" href="#"  style="display:block;border:none;width:100vw;" ng-click="modifyHy()">
+        行业
+        <span class="item-note">
+          {{hyName}}
+        </span>
+        <i class="icon ion-ios-arrow-right"></i>
+      </a>
+      <a class="item item-icon-right" href="#"  style="display:block;border:none;width:100vw;" ng-click="modifyCompany()">
+        公司-职业
+        <span class="item-note" style="width:12em;overflow: hidden;">
+          东莞市天高网络科技有限公司
+        </span>
+        <i class="icon ion-ios-arrow-right"></i>
+      </a>
+    </div>
+
+  </ion-content>
+</ion-view>
+
+<script id="modifyTxModal.html" type="text/ng-template">
+  <div class="modal" id="txModal" style="background-color: rgba(0,0,0,.5);">
+    <ion-content scroll="false">
+      <div class="bar bar-header bar-clear">
+        <button class="button-clear" ng-click="closeTxModal()"><i class="icon ion-ios-close-empty" style="color:#fff;"></i></button>
+      </div>
+    </ion-content>
+    <ion-footer-bar style="height:12.5em;" class="bar bar-footer bar-clear padding">
+      <div style="width:100%;">
+        <button style="text-align: center;border-top-left-radius: 0.2em;border-top-right-radius:.2em;" ng-click="" class="button button-full button-stable row">
+          <i style="color:#eb4f38;padding-right:1em;text-align:right;" class="icon ion-camera col"></i>
+          <span style="font-family:'华文细黑';color:#444;text-align: left;padding-left: 0em;" class="col">拍照</span>
+        </button>
+        <button class="button button-full button-stable row" ng-click="" style="margin-top:-10px;border-top:1px #d1d1d1 solid;text-align: center;border-bottom-left-radius: 0.2em;border-bottom-right-radius:.2em;">
+          <i class="icon ion-images col" style="color:#eb4f38;padding-right:1em;text-align:right;"></i>
+          <span style="font-family:'华文细黑';color:#444;text-align: left;padding-left: 0em;" class="col">相册</span>
+        </button>
+        <button class="button button-full button-stable row" ng-click="closeTxModal()" style="text-align: center;border-radius: .3em;">
+          <i class="icon ion-power col" style="color:#eb4f38;padding-right:1em;text-align:right;"></i>
+          <span style="font-family:'华文细黑';color:#444;text-align: left;padding-left: 0em;" class="col">取消</span>
+        </button>
+      </div>
+    </ion-footer-bar>
+  </div>
+</script>
+
+<script id="modifyTelModal.html" type="text/ng-template">
+  <div class="modal" id="telModal" style="background-color: rgba(0,0,0,.5);">
+    <ion-content scroll="false">
+      <div class="bar bar-header bar-clear">
+        <button class="button-clear" ng-click="closeTelModal()"><i class="icon ion-ios-close-empty" style="color:#fff;"></i></button>
+      </div>
+    </ion-content>
+    <ion-footer-bar style="height:18em;" class="bar bar-footer bar-clear padding">
+      <div style="width:100%;">
+        <div class="padding" style="padding:0 1em;">
+          <div class="list list-inset row" style="background: none;padding:0;">
+            <div class="col-75" style="padding-right:4px;overflow: hidden;height:3.5em;">
+              <label class="item item-input" style="display: inline-block;">
+                <i class="icon ion-iphone" style="display:inline;color:#ffc900;margin-right: 8px;font-size: 1.6em;vertical-align:middle;"></i>
+                <input type="tel" placeholder="请输入手机号码" style="display: inline-block;" />
+              </label>
+            </div>
+            <div class="col-25">
+              <button class="button button-energized button-full" style="margin:0;display: inline-block;height:3.7em;">验证</button>
+            </div>
+          </div>
+          <div class="list list-inset" style="margin-top: -1em;">
+            <label class="item item-input">
+              <i class="icon ion-key" style="color:#ffc900;margin-right: 8px;font-size: 1.6em;"></i>
+              <input type="tel" placeholder="验证码" />
+            </label>
+          </div>
+          <div style="margin-top: -.5em;">
+            <button class="button button-block button-stable" style="color:#1e1e1e;font-family: '华文细黑';font-size: 1.2em;padding:.4em 0;">
+              确定
+            </button>
+          </div>
+          <div><p style="font-size: .9em;text-align: center;color:#fff;">更换后个人信息不变，下次可以用新号码登录</p></div>
+        </div>
+      </div>
+    </ion-footer-bar>
+  </div>
+</script>
+
+
+
+<script id="modifyNicknameModal.html" type="text/ng-template">
+  <div class="modal" id="modifyNicknameModal" style="background-color: rgba(0,0,0,.5);">
+    <ion-content scroll="false">
+      <div class="bar bar-header bar-clear">
+        <button class="button-clear" ng-click="closeNickModal()"><i class="icon ion-ios-close-empty" style="color:#fff;"></i></button>
+      </div>
+    </ion-content>
+    <ion-footer-bar style="height:10em;" class="bar bar-footer bar-clear padding">
+      <div style="width:100%;">
+        <div class="padding" style="padding:0 1em;">
+          <div class="list list-inset" style="margin-top: -1em;">
+            <label class="item item-input">
+              <i class="icon ion-ios-person" style="color:#ffc900;margin-right: 8px;font-size: 1.6em;"></i>
+              <input type="text" placeholder="请输入新昵称" />
+            </label>
+          </div>
+          <div style="margin-top: -.5em;">
+            <button class="button button-block button-stable" style="color:#1e1e1e;font-family: '华文细黑';font-size: 1.2em;padding:.4em 0;">
+              确定
+            </button>
+          </div>
+        </div>
+      </div>
+    </ion-footer-bar>
+  </div>
+</script>
+
+
+<script id="modifyGenderModal.html" type="text/ng-template">
+  <div class="modal" id="modifyGenderModal" style="background-color: rgba(0,0,0,.5);">
+    <ion-content scroll="false">
+      <div class="bar bar-header bar-clear">
+        <button class="button-clear" ng-click="closeGenderModal()"><i class="icon ion-ios-close-empty" style="color:#fff;"></i></button>
+      </div>
+    </ion-content>
+    <ion-footer-bar style="height:10em;" class="bar bar-footer bar-clear padding">
+      <div style="width:100%;">
+        <div class="padding">
+          <div class="row" style="margin:0;padding:0;">
+            <button class="button col icon-left ion-female button-energized" style="color:#1e1e1e;font-family: '华文细黑';">女</button>
+            <button class="button col icon-left ion-male button-energized" style="margin:0 .5em;color:#1e1e1e;font-family: '华文细黑';">男</button>
+            <button class="button col icon-left ion-transgender button-energized" style="color:#1e1e1e;font-family: '华文细黑';">未知</button>
+          </div>
+          <div>
+            <button class="button button-block button-stable" style="color:#1e1e1e;font-family: '华文细黑';font-size: 1.2em;padding:.4em 0;">
+              确定
+            </button>
+          </div>
+        </div>
+      </div>
+    </ion-footer-bar>
+  </div>
+</script>
+
+
+<script id="modifySignatureModal.html" type="text/ng-template">
+  <div class="modal" id="modifySignatureModal" style="background-color: rgba(0,0,0,.5);">
+    <ion-content scroll="false">
+      <div class="bar bar-header bar-clear">
+        <button class="button-clear" ng-click="closeSignatureModal()"><i class="icon ion-ios-close-empty" style="color:#fff;"></i></button>
+      </div>
+    </ion-content>
+    <ion-footer-bar style="height:10em;" class="bar bar-footer bar-clear padding">
+      <div style="width:100%;">
+        <div class="padding" style="padding:0 1em;">
+          <div class="list list-inset" style="margin-top: -1em;">
+            <label class="item item-input">
+              <i class="icon ion-ios-color-wand" style="color:#ffc900;margin-right: 8px;font-size: 1.6em;"></i>
+              <input type="text" placeholder="请输入个性签名" />
+            </label>
+          </div>
+          <div style="margin-top: -.5em;">
+            <button class="button button-block button-stable" style="color:#1e1e1e;font-family: '华文细黑';font-size: 1.2em;padding:.4em 0;">
+              确定
+            </button>
+          </div>
+        </div>
+      </div>
+    </ion-footer-bar>
+  </div>
+</script>
+
+
+<script id="modifyCompanyModal.html" type="text/ng-template">
+  <div class="modal" id="modifyCompanyModal" style="background-color: rgba(0,0,0,.5);">
+    <ion-content scroll="false">
+      <div class="bar bar-header bar-clear">
+        <button class="button-clear" ng-click="closeCompanyModal()"><i class="icon ion-ios-close-empty" style="color:#fff;"></i></button>
+      </div>
+    </ion-content>
+    <ion-footer-bar style="height:12em;" class="bar bar-footer bar-clear padding">
+      <div style="width:100%;">
+        <div class="padding" style="padding:0 1em;">
+          <div class="list list-inset" style="margin-top: -1em;">
+            <label class="item item-input">
+              <i class="icon ion-ios-people" style="color:#ffc900;margin-right: 8px;font-size: 1.6em;"></i>
+              <input type="text" placeholder="请输入公司名称" />
+            </label>
+            <label class="item item-input">
+              <i class="icon ion-ios-briefcase" style="color:#ffc900;margin-right: 8px;font-size: 1.6em;"></i>
+              <input type="text" placeholder="请输入从事工作" />
+            </label>
+          </div>
+          <div style="margin-top: -.5em;">
+            <button class="button button-block button-stable" style="color:#1e1e1e;font-family: '华文细黑';font-size: 1.2em;padding:.4em 0;">
+              确定
+            </button>
+          </div>
+        </div>
+      </div>
+    </ion-footer-bar>
+  </div>
+</script>
+
+
+<script id="modifyHyModal.html" type="text/ng-template">
+  <div class="modal" id="modifyHyModal" style="background-color: rgba(0,0,0,.5);">
+    <ion-header-bar>
+      <button class="button button-icon icon ion-ios-arrow-left" ng-click="closeHyModal()"></button>
+      <h1 class="title">行业</h1>
+    </ion-header-bar>
+    <ion-content>
+      <ion-list>
+        <ion-radio ng-model="hyName" ng-value="hy.name" ng-repeat="hy in hyArray" ng-click="selectHy(hy.name)">{{hy.name}}</ion-radio>
+      </ion-list>
+    </ion-content>
+  </div>
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

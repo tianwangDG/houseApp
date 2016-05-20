@@ -1,4 +1,4 @@
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'userController', 'ngCordova'])
 
 .run(function($ionicPlatform,$rootScope,$state,$ionicHistory) {
   $ionicPlatform.ready(function() {
@@ -164,7 +164,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             }
 		})
 		.state('houseTab.hx',{
-			url:'/houseHx/:hxId:house_id',
+			url:'/houseHx/:hxId/:house_id',
             views: {
               'house-zsl':{
                 templateUrl: 'templates/house-Hx.html',
@@ -181,15 +181,64 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
               }
             }
 		})
-		.state('houseTab.zb',{
-			url:'/houseZb',
-            views: {
-              'house-zb':{
-                templateUrl: 'templates/house-zb4.html',
-                controller: 'houseZbCtrl'
-              }
+        .state('houseZb',{
+          url:'/houseZb/:house_id',
+          templateUrl: 'templates/house-zb4.html',
+          controller: 'houseZbCtrl',
+          resolve:{
+            zbInfo:function($stateParams,HouseDetail){
+              return (
+                HouseDetail.get({id:$stateParams.house_id}).$promise.then(function(response){
+                  return {house_name:response.data.house_name,lat: response.data.house_latitude,lon:response.data.house_longtitude};
+                })
+              );
             }
-		})
+          }
+        })
+
+
+
+
+    $stateProvider
+      .state('memberInfo',{
+        url:'/memberInfo',
+        templateUrl: 'templates/memberInfo.html',
+        controller:'memberInfoCtrl'
+      })
+      .state('memberRecommend',{
+        url:'/memberRecommend',
+        templateUrl: 'templates/memberRecommend.html',
+        controller:'memberRecommendCtrl'
+      })
+      .state('memberFeedback',{
+        url:'/memberFeedback',
+        templateUrl: 'templates/memberFeedback.html',
+        controller:'memberFeedbackCtrl'
+      })
+      .state('calculator',{
+        url:'/calculator',
+        templateUrl: 'templates/calculator.html',
+        controller:'calculatorCtrl'
+      })
+
+
+
+
+
+
+
+      //.state('pk', {
+      //  url: '/pk?param',
+      //  templateUrl: 'templates/pk.html',
+      //  controller: 'pkCtrl'
+      //})
+      //
+
+
+
+
+
+
 
   $urlRouterProvider.otherwise('/tab/index');
 

@@ -1,0 +1,321 @@
+<ion-view hide-nav-bar="true" style="background-color: #37ac66;" class="calculator">
+  <div class="bar bar-header" style="background: none;">
+    <button class="button button-icon icon ion-ios-arrow-left" ng-click="goBackIndex()" style="color:#fff;"></button>
+    <div class="h1 title" style="font-family: '华文细黑';color:#fff;">购房计算器</div>
+  </div>
+
+  <div class="tabs tabs-top tabs-virtual row calculatorContainer">
+    <div class="calculatorItem col">
+    <a href class="tab-item disable-user-behavior" style="border-left: 1px solid #fff;border-top-left-radius: .3em;border-bottom-left-radius: .3em;"
+       ng-class="{active: active_content=='gjjdk'}" ng-click="setActiveContent('gjjdk')">
+      公积金贷款
+    </a>
+    </div>
+    <div class="calculatorItem col">
+    <a href class="tab-item disable-user-behavior"
+       ng-class="{active: active_content=='sydk'}" ng-click="setActiveContent('sydk')">
+      商业贷款
+    </a>
+    </div>
+    <div class="calculatorItem col">
+    <a href class="tab-item disable-user-behavior" style="border-right: 1px solid #fff;border-top-right-radius: .3em;border-bottom-right-radius:.3em;"
+       ng-class="{active: active_content=='zhdk'}" ng-click="setActiveContent('zhdk')">
+      组合贷款
+    </a>
+    </div>
+  </div>
+
+  <!-- 公积金贷款开始 -->
+  <ion-content has-header="true" class="has-subheader" ng-show="active_content=='gjjdk'" style="background-color: #f8f8f8;">
+    <form name="calculator" ng-controller="calculatorCtrl">
+    <div class="list gfjsq">
+        <label class="item item-input">
+          <span class="input-label">还款方式</span>
+          <ion-list class="hkfs">
+          <ion-radio ng-model="hkfs" ng-value="hkfsArray[0].name" style="background-color:#fff!important;">{{hkfsArray[0].name}}</ion-radio>
+          <ion-radio ng-model="hkfs" ng-value="hkfsArray[1].name" style="background-color:#fff!important;">{{hkfsArray[1].name}}</ion-radio>
+          </ion-list>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">房价总额</span>
+          <input type="number" ng-model="fjze" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                 onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'0')}else{this.value=this.value.replace(/\D/g,'')}" >
+          <span class="dw">万</span>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">首付比例</span>
+          <input type="number" ng-model="sfbl" ng-click="openSfblModal()" readonly style="background-color:#fff!important;">
+          <span class="dw" ng-click="openSfblModal()">成</span><i class="icon ion-ios-arrow-right" ng-click="openSfblModal()" style="position:absolute;right:.4em;height:34px;line-height: 34px;"></i>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">贷款总额</span>
+          <input type="number" ng-model="dkze" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                 onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'0')}else{this.value=this.value.replace(/\D/g,'')}" >
+          <span class="dw">万</span>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">贷款年限</span>
+          <input type="number" ng-model="dknx" ng-click="openDknxModal()" readonly style="background-color:#fff!important;">
+          <span class="dw" ng-click="openDknxModal()">年</span><i class="icon ion-ios-arrow-right" ng-click="openDknxModal()" style="position:absolute;right:.4em;height:34px;line-height: 34px;"></i>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">贷款利率</span>
+          <span style="font-size: .85em;text-align: right;color:#444;right:0;">{{dkllName}}</span><i class="icon ion-ios-arrow-right" style="position:absolute;right:.4em;height:34px;line-height: 34px;"></i>
+        </label>
+        <div class="item padding">
+          <button class="button button-full button-balanced" ng-click="gjjJs()">
+            开始计算
+          </button>
+        </div>
+    </div>
+
+    <div class="list" style="padding-bottom: 20px;">
+      <label class="item item-input">
+        <span class="input-label">还款总额</span>
+        {{hkze}}元
+      </label>
+      <label class="item item-input">
+        <span class="input-label">贷款月数</span>
+        {{dkys}}月
+      </label>
+      <label class="item item-input">
+        <span class="input-label">支付利息</span>
+        {{zflx}}元
+      </label>
+      <label class="item item-input">
+        <span class="input-label">{{hk}}</span>
+        {{yjhk}}元
+      </label>
+    </div>
+    </form>
+  </ion-content>
+<!-- 公积金贷款结束 -->
+
+<!-- 商业贷款开始 -->
+  <ion-content has-header="true" class="has-subheader"  ng-show="active_content=='sydk'" style="background-color: #f8f8f8;">
+    <form name="calculator" ng-controller="calculatorCtrl">
+      <div class="list gfjsq">
+        <label class="item item-input">
+          <span class="input-label">还款方式</span>
+          <ion-list class="hkfs">
+            <ion-radio ng-model="hkfs" ng-value="hkfsArray[0].name" style="background-color:#fff!important;">{{hkfsArray[0].name}}</ion-radio>
+            <ion-radio ng-model="hkfs" ng-value="hkfsArray[1].name" style="background-color:#fff!important;">{{hkfsArray[1].name}}</ion-radio>
+          </ion-list>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">房价总额</span>
+          <input type="number" ng-model="fjze" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                 onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'0')}else{this.value=this.value.replace(/\D/g,'')}" >
+          <span class="dw">万</span>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">首付比例</span>
+          <input type="number" ng-model="sfbl" ng-click="openSfblModal()" readonly style="background-color:#fff!important;">
+          <span class="dw" ng-click="openSfblModal()">成</span><i class="icon ion-ios-arrow-right" ng-click="openSfblModal()" style="position:absolute;right:.4em;height:34px;line-height: 34px;"></i>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">贷款总额</span>
+          <input type="number" ng-model="dkze" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                 onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'0')}else{this.value=this.value.replace(/\D/g,'')}" >
+          <span class="dw">万</span>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">贷款年限</span>
+          <input type="number" ng-model="dknx" ng-click="openDknxModal()" readonly style="background-color:#fff!important;">
+          <span class="dw" ng-click="openDknxModal()">年</span><i class="icon ion-ios-arrow-right" ng-click="openDknxModal()" style="position:absolute;right:.4em;height:34px;line-height: 34px;"></i>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">贷款利率</span>
+          <!--<span style="font-size: .85em;text-align: right;color:#444;right:0;" ng-click="ttttt()">{{dkllName}}</span>-->
+          <input type="text" ng-model="dkllName"  style="background-color:#fff!important;" readonly ng-click="openSydkllModal()" />
+          <i class="icon ion-ios-arrow-right" style="position:absolute;right:.4em;height:34px;line-height: 34px;"></i>
+        </label>
+        <div class="item padding">
+          <button class="button button-full button-balanced" ng-click="sydkJs()">
+            开始计算
+          </button>
+        </div>
+      </div>
+
+      <div class="list" style="padding-bottom: 20px;">
+        <label class="item item-input">
+          <span class="input-label">还款总额</span>
+          {{hkze}}元
+        </label>
+        <label class="item item-input">
+          <span class="input-label">贷款月数</span>
+          {{dkys}}月
+        </label>
+        <label class="item item-input">
+          <span class="input-label">支付利息</span>
+          {{zflx}}元
+        </label>
+        <label class="item item-input">
+          <span class="input-label">{{hk}}</span>
+          {{yjhk}}元
+        </label>
+      </div>
+    </form>
+  </ion-content>
+<!-- 商业贷款结束 -->
+
+<!-- 组合贷款开始 -->
+  <ion-content has-header="true" class="has-subheader" ng-show="active_content=='zhdk'" style="background-color: #f8f8f8;">
+    <form name="calculator" ng-controller="calculatorCtrl">
+      <div class="list gfjsq">
+        <label class="item item-input">
+          <span class="input-label">还款方式</span>
+          <ion-list class="hkfs">
+            <ion-radio ng-model="hkfs" ng-value="hkfsArray[0].name" style="background-color:#fff!important;">{{hkfsArray[0].name}}</ion-radio>
+            <ion-radio ng-model="hkfs" ng-value="hkfsArray[1].name" style="background-color:#fff!important;">{{hkfsArray[1].name}}</ion-radio>
+          </ion-list>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">房价总额</span>
+          <input type="number" ng-model="fjze" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                 onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'0')}else{this.value=this.value.replace(/\D/g,'')}" >
+          <span class="dw">万</span>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">首付比例</span>
+          <input type="number" ng-model="sfbl" ng-click="openSfblModal()" readonly style="background-color:#fff!important;">
+          <span class="dw" ng-click="openSfblModal()">成</span><i class="icon ion-ios-arrow-right" ng-click="openSfblModal()" style="position:absolute;right:.4em;height:34px;line-height: 34px;"></i>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">贷款总额</span>
+          <input type="number" ng-model="dkze" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                 onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'0')}else{this.value=this.value.replace(/\D/g,'')}" >
+          <span class="dw">万</span>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">公积金贷款</span>
+          <input type="number" ng-model="gjjdked" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                 onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'0')}else{this.value=this.value.replace(/\D/g,'')}" >
+          <span class="dw">万</span>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">商业贷款</span>
+          <input type="number" ng-model="sydked" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                 onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'0')}else{this.value=this.value.replace(/\D/g,'')}" >
+          <span class="dw">万</span>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">贷款年限</span>
+          <input type="number" ng-model="dknx" ng-click="openDknxModal()" readonly style="background-color:#fff!important;">
+          <span class="dw" ng-click="openDknxModal()">年</span><i class="icon ion-ios-arrow-right" ng-click="openDknxModal()" style="position:absolute;right:.4em;height:34px;line-height: 34px;"></i>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">贷款利率</span>
+          <!--<span style="font-size: .85em;text-align: right;color:#444;right:0;" ng-click="ttttt()">{{dkllName}}</span>-->
+          <input type="text" ng-model="dkllName"  style="background-color:#fff!important;" readonly ng-click="openSydkllModal()" />
+          <i class="icon ion-ios-arrow-right" style="position:absolute;right:.4em;height:34px;line-height: 34px;"></i>
+        </label>
+        <div class="item padding">
+          <button class="button button-full button-balanced" ng-click="zhdkJs()">
+            开始计算
+          </button>
+        </div>
+      </div>
+
+      <div class="list" style="padding-bottom: 20px;">
+        <label class="item item-input">
+          <span class="input-label">还款总额</span>
+          {{hkze}}元
+        </label>
+        <label class="item item-input">
+          <span class="input-label">贷款月数</span>
+          {{dkys}}月
+        </label>
+        <label class="item item-input">
+          <span class="input-label">支付利息</span>
+          {{zflx}}元
+        </label>
+        <label class="item item-input">
+          <span class="input-label">{{hk}}</span>
+          {{yjhk}}元
+        </label>
+      </div>
+    </form>
+  </ion-content>
+<!-- 组合贷款开始 -->
+
+</ion-view>
+
+
+
+
+
+<!--首付比例-->
+<script id="sfbl.html" type="text/ng-template">
+  <div class="modal" id="sfbl" style="background-color: rgba(0,0,0,.5);">
+    <ion-content scroll="false">
+      <div class="bar bar-header bar-clear">
+        <button class="button-clear" ng-click="closeSfblModal()"><i class="icon ion-ios-close-empty" style="color:#fff;"></i></button>
+      </div>
+    </ion-content>
+    <ion-footer-bar style="height:18em;background-color: #efefef;padding:1em 0em;" class="bar bar-footer bar-clear padding">
+      <div style="width:100%;">
+        <h3 style="text-align: center;font-size: 1.2em;font-family: '华文细黑';">首付比例</h3>
+        <h4 ng-click="closeSfblModal()" style="position: absolute;color:#000;right:.8em;top:0.1em;font-size:1.2em;font-family: '华文细黑';color:#bbb;">取消</h4>
+        <ion-scroll style="width:100%;height:208px;">
+        <div class="list">
+          <ion-list>
+            <ion-radio ng-model="sfblS" ng-value="sfbl.name" ng-repeat="sfbl in sfblArray" ng-click="selectSfbl(sfbl.id)">{{sfbl.name}}</ion-radio>
+          </ion-list>
+        </div>
+        </ion-scroll>
+      </div>
+    </ion-footer-bar>
+  </div>
+</script>
+
+<!--贷款年限-->
+<script id="dknx.html" type="text/ng-template">
+  <div class="modal" id="dknx" style="background-color: rgba(0,0,0,.5);">
+    <ion-content scroll="false">
+      <div class="bar bar-header bar-clear">
+        <button class="button-clear" ng-click="closeDknxModal()"><i class="icon ion-ios-close-empty" style="color:#fff;"></i></button>
+      </div>
+    </ion-content>
+    <ion-footer-bar style="height:18em;background-color: #efefef;padding:1em 0em;" class="bar bar-footer bar-clear padding">
+      <div style="width:100%;">
+        <h3 style="text-align: center;font-size: 1.2em;font-family: '华文细黑';">贷款年限</h3>
+        <h4 ng-click="closeDknxModal()" style="position: absolute;color:#000;right:.8em;top:0.1em;font-size:1.2em;font-family: '华文细黑';color:#bbb;">取消</h4>
+        <ion-scroll style="width:100%;height:208px;">
+          <div class="list">
+            <!--<a class="item" ng-repeat="sfbl in sfblArray" href="#" style="color:#444;padding:10px 16px;">-->
+            <!--{{sfbl.name}}-->
+            <!--</a>-->
+            <ion-list>
+              <ion-radio ng-model="dknxS" ng-value="dknx.name" ng-repeat="dknx in dknxArray" ng-click="selectDknx(dknx.id)">{{dknx.name}}</ion-radio>
+            </ion-list>
+          </div>
+        </ion-scroll>
+      </div>
+    </ion-footer-bar>
+  </div>
+</script>
+
+<!--商业贷款利率-->
+<script id="sydkllModal.html" type="text/ng-template">
+  <div class="modal" id="sydkllModal" style="background-color: rgba(0,0,0,.5);">
+    <ion-content scroll="false">
+      <div class="bar bar-header bar-clear">
+        <button class="button-clear" ng-click="closeSydkllModal()"><i class="icon ion-ios-close-empty" style="color:#fff;"></i></button>
+      </div>
+    </ion-content>
+    <ion-footer-bar style="height:18em;background-color: #efefef;padding:1em 0em;" class="bar bar-footer bar-clear padding">
+      <div style="width:100%;">
+        <h3 style="text-align: center;font-size: 1.2em;font-family: '华文细黑';">贷款年限</h3>
+        <h4 ng-click="closeSydkllModal()" style="position: absolute;color:#000;right:.8em;top:0.1em;font-size:1.2em;font-family: '华文细黑';color:#bbb;">取消</h4>
+        <ion-scroll style="width:100%;height:208px;">
+          <div class="list">
+            <ion-list>
+              <ion-radio ng-model="sydkllS" ng-value="sydkll.name" ng-repeat="sydkll in sydkllArray" ng-click="selectSydkll(sydkll.id)">{{sydkll.name}}</ion-radio>
+            </ion-list>
+          </div>
+        </ion-scroll>
+      </div>
+    </ion-footer-bar>
+  </div>
+</script>
