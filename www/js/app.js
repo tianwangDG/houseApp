@@ -1,4 +1,4 @@
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'userController', 'ngCordova'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'userController', 'concernController', 'ngCordova','ion-datetime-picker'])
 
 .run(function($ionicPlatform,$rootScope,$state,$ionicHistory) {
   $ionicPlatform.ready(function() {
@@ -23,8 +23,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
 .constant('appInfo', {
 	apiUrl: 'http://app.tigonetwork.com/api',
+	customerApi: 'http://app.tigonetwork.com/api/customer'
 })
 
+//日期时间选择器：ion-datetime-picker
+.run(function($ionicPickerI18n) {
+    $ionicPickerI18n.weekdays = ["日", "一", "二", "三", "四", "五", "六"];
+    $ionicPickerI18n.months = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
+    $ionicPickerI18n.ok = "确定";
+    $ionicPickerI18n.cancel = "取消";
+})
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $compileProvider) {
 //.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $compileProvider, ionicDatePickerProvider) {
@@ -194,37 +202,43 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
               );
             }
           }
-        })
+        });
 
 
 
 
     $stateProvider
-      .state('memberInfo',{
-        url:'/memberInfo',
-        templateUrl: 'templates/memberInfo.html',
-        controller:'memberInfoCtrl'
+        .state('login',{
+            url:'/login',
+            templateUrl: 'templates/login.html',
+            controller:'loginCtrl'
+        })
+        .state('memberInfo',{
+            url:'/memberInfo',
+            templateUrl: 'templates/memberInfo.html',
+            controller:'memberInfoCtrl'
+        })
+        .state('memberRecommend',{
+            url:'/memberRecommend',
+            templateUrl: 'templates/memberRecommend.html',
+            controller:'memberRecommendCtrl'
+        })
+        .state('memberFeedback',{
+            url:'/memberFeedback',
+            templateUrl: 'templates/memberFeedback.html',
+            controller:'memberFeedbackCtrl'
+        })
+        .state('calculator',{
+            url:'/calculator',
+            templateUrl: 'templates/calculator.html',
+            controller:'calculatorCtrl'
+        })
+
+      .state('pk', {
+        url: '/pk?param',
+        templateUrl: 'templates/pk.html',
+        controller: 'pkCtrl'
       })
-      .state('memberRecommend',{
-        url:'/memberRecommend',
-        templateUrl: 'templates/memberRecommend.html',
-        controller:'memberRecommendCtrl'
-      })
-      .state('memberFeedback',{
-        url:'/memberFeedback',
-        templateUrl: 'templates/memberFeedback.html',
-        controller:'memberFeedbackCtrl'
-      })
-      .state('calculator',{
-        url:'/calculator',
-        templateUrl: 'templates/calculator.html',
-        controller:'calculatorCtrl'
-      })
-
-
-
-
-
 
 
       //.state('pk', {
@@ -233,9 +247,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       //  controller: 'pkCtrl'
       //})
       //
-
-
-
 
 
 

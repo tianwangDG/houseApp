@@ -7,7 +7,7 @@ angular.module('starter.services', ['ngResource'])
 	})
 
 	.factory('House', function($resource, appInfo){
-		return $resource(appInfo.apiUrl + '/house/?page=:page', {page:"@page"},{
+		return $resource(appInfo.apiUrl + '/house/?page=:page', {filter:"@filter",page:"@page"},{
 
 		});
 	})

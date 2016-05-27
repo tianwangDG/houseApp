@@ -2,6 +2,7 @@ angular.module('starter.controllers', [])
 
 .controller('indexCtrl', function($scope, $rootScope, $state, $ionicSlideBoxDelegate,$http, appInfo, Slider, House) {
 
+
 	$scope.goToMemberInfo = function(){
 		$state.go('memberInfo');
 	};
@@ -15,7 +16,8 @@ angular.module('starter.controllers', [])
 	//楼盘数据展示
 	$scope.showLpInit = {
 		hasMore: true,
-		page: 1
+		page: 1,
+		pageSize:10
 	};
 	$scope.result = [];
 
@@ -27,6 +29,13 @@ angular.module('starter.controllers', [])
 	//	console.log($scope.result);
 	//});
 
+	/*******************************************************************************/
+	/*******************************************************************************/
+	/*******************************************************************************/
+	/*******************************************************************************/
+	/*******************************************************************************/
+	//使用ngResource的loadMore函数
+		/*
 	$scope.loadMore = function(){
 		House.get({page:$scope.showLpInit.page}).$promise.then(function(response){
 			if(response.data.length>0){
@@ -41,9 +50,34 @@ angular.module('starter.controllers', [])
 		});
 		$scope.showLpInit.page++;
 	}
+	*/
+	/*******************************************************************************/
+	/*******************************************************************************/
+	/*******************************************************************************/
+	/*******************************************************************************/
+	/*******************************************************************************/
+
+	$scope.loadMore = function(){
+		$http.get(appInfo.apiUrl+'/house/?' + 'page='+$scope.showLpInit.page + '&page_size=' + $scope.showLpInit.pageSize)
+			.success(function(response){
+				if(response.data.length>0){
+					response.data.forEach(function(item){
+						$scope.result.push(item);
+					})
+				}
+				if(response.data.length<$scope.showLpInit.pageSize){
+					$scope.showLpInit.hasMore = false;
+				}
+				$scope.$broadcast('scroll.infiniteScrollComplete');
+			})
+		$scope.showLpInit.page++;
+	}
+
 
 	//设置特色标签颜色
 	$scope.colors = ["#f3541f","#326ed7","#653a78","#34ab55","#ffbc44","#039BE5","#009688","#536DFE","#AB47BC","#E53935","#3F51B5"];
+
+
 
 
 
@@ -56,68 +90,110 @@ angular.module('starter.controllers', [])
 	$scope.items = [];
 	$scope.queryArr = [];
 	$scope.showTs = false;
+	var obj = {};
+	var params ='';
+
+		//筛选房型
+		$scope.filterHouseType = function(houseTypeId){
+			$scope.queryArr['houseType'] = {house_type: houseTypeId};
+			//console.log($scope.queryArr);
+			obj.house_type = houseTypeId;
+
+			$scope.result = "";
+			$scope.showLpInit.page = 1;
+
+			var params = '';
+			for(i in obj){
+				//console.log(i + ' : ' + obj[i]);
+				params = params + "&filter[" + i + "]=" + obj[i];
+			}
+
+			//console.log(params);
+
+			//console.log(appInfo.apiUrl+'/house/?'+params.substr(1) + '&page='+$scope.showLpInit.page + '&page_size=' + $scope.showLpInit.pageSize);
+
+			$http.get(appInfo.apiUrl+'/house/?'+params.substr(1) + '&page='+$scope.showLpInit.page + '&page_size=' + $scope.showLpInit.pageSize)
+				.success(function(response){
+					//console.log(response);
+					if(response.data.length>0){
+						$scope.result = response.data;
+					}
+					if(response.data.length<$scope.showLpInit.pageSize){
+						$scope.showLpInit.hasMore = false;
+					}
+					$scope.$broadcast('scroll.infiniteScrollComplete');
+
+					$scope.showLpInit.page++;
+				});
+
+
+		}
+
+
 
 		$scope.filter = [
-			{id:1,lx:'zt',name:'状态',items:[{fid:1,lx:'zt',name:'毛坯'},{fid:2,lx:'zt',name:'清水'},{fid:3,lx:'zt',name:'简装'},{fid:4,lx:'zt',name:'精装'},{fid:5,lx:'zt',name:'豪装'}]},
-			{id:2,lx:'qy',name:'区域',items:[{fid:1,lx:'qy',name:'不限'},{fid:2,lx:'qy',name:'市辖区'},{fid:3,lx:'qy',name:'东城区'},{fid:4,lx:'qy',name:'南城区'},{fid:5,lx:'qy',name:'万江区'},{fid:5,lx:'qy',name:'厚街区'}]},
-			{id:3,lx:'zj',name:'总价',items:[{fid:1,lx:'zj',name:'100万以下'},{fid:2,lx:'zj',name:'100-150万'},{fid:3,lx:'zj',name:'150-200万'},{fid:4,lx:'zj',name:'200-250万'},{fid:5,lx:'zj',name:'250-300万'}]},
-			{id:4,lx:'fx',name:'房型',items:[{fid:1,lx:'fx',name:'一房'},{fid:2,lx:'fx',name:'两房'},{fid:3,lx:'fx',name:'三房'},{fid:4,lx:'fx',name:'四房'},{fid:5,lx:'fx',name:'五房'}]},
-			{id:5,lx:'ts',name:'特色',items:[{fid:1,lx:'ts',name:'不限',isChecked:false},{fid:2,lx:'ts',name:'精装修',isChecked:false},{fid:3,lx:'ts',name:'带花园',isChecked:false},{fid:4,lx:'ts',name:'近地铁',isChecked:false},{fid:5,lx:'ts',name:'带飘窗',isChecked:false},{fid:6,lx:'ts',name:'不限购',isChecked:false},{fid:7,lx:'ts',name:'复式',isChecked:false},{fid:8,lx:'ts',name:'品牌房企',isChecked:false}]},
-			{id:6,lx:'sm',name:'售卖状态',items:[{fid:1,lx:'sm',name:'不限'},{fid:2,lx:'sm',name:'即将开盘'},{fid:3,lx:'sm',name:'排卡中'},{fid:4,lx:'sm',name:'在售'},{fid:5,lx:'sm',name:'售罄'}]}
+			{id:1,lx:'house_decoration_status',name:'状态',items:[{fid:1,lx:'house_decoration_status',name:'毛坯'},{fid:2,lx:'house_decoration_status',name:'清水'},{fid:3,lx:'house_decoration_status',name:'简装'},{fid:4,lx:'house_decoration_status',name:'精装'},{fid:5,lx:'house_decoration_status',name:'豪装'}]},
+			{id:2,lx:'house_zone_id',name:'区域',items:[{fid:0,lx:'house_zone_id',name:'不限'},{fid:1,lx:'house_zone_id',name:'市辖区'},{fid:2,lx:'house_zone_id',name:'东城区'},{fid:3,lx:'house_zone_id',name:'南城区'},{fid:4,lx:'house_zone_id',name:'万江区'},{fid:5,lx:'house_zone_id',name:'厚街区'}]},
+			{id:3,lx:'zj',name:'总价',items:[{fid:1,lx:'zj',name:'100万以下',house_min_price:0,house_max_price:1000000},{fid:2,lx:'zj',name:'100-150万',house_min_price:1000000,house_max_price:1500000},{fid:3,lx:'zj',name:'150-200万',house_min_price:1500000,house_max_price:2000000},{fid:4,lx:'zj',name:'200-250万',house_min_price:2000000,house_max_price:2500000},{fid:5,lx:'zj',name:'250-300万',house_min_price:2500000,house_max_price:3000000}]},
+			{id:4,lx:'house_apartment_styles',name:'房型',items:[{fid:1,lx:'house_apartment_styles',name:'一房'},{fid:2,lx:'house_apartment_styles',name:'两房'},{fid:3,lx:'house_apartment_styles',name:'三房'},{fid:4,lx:'house_apartment_styles',name:'四房'},{fid:5,lx:'house_apartment_styles',name:'五房'}]},
+			{id:5,lx:'ts',name:'特色',items:[{fid:0,lx:'ts',name:'不限',isChecked:false},{fid:1,lx:'ts',name:'精装修',isChecked:false},{fid:2,lx:'ts',name:'带花园',isChecked:false},{fid:3,lx:'ts',name:'近地铁',isChecked:false},{fid:4,lx:'ts',name:'带飘窗',isChecked:false},{fid:5,lx:'ts',name:'不限购',isChecked:false},{fid:6,lx:'ts',name:'复式',isChecked:false},{fid:7,lx:'ts',name:'品牌房企',isChecked:false}]},
+			{id:6,lx:'house_sale_status',name:'售卖状态',items:[{fid:0,lx:'house_sale_status',name:'不限'},{fid:1,lx:'house_sale_status',name:'即将开盘'},{fid:2,lx:'house_sale_status',name:'排卡中'},{fid:3,lx:'house_sale_status',name:'在售'},{fid:4,lx:'house_sale_status',name:'售罄'}]}
 		];
 
 
-		$scope.ztItem = [
-			{id:1,lx:'zt',name:'毛坯'},
-			{id:2,lx:'zt',name:'清水'},
-			{id:3,lx:'zt',name:'简装'},
-			{id:4,lx:'zt',name:'精装'},
-			{id:5,lx:'zt',name:'豪装'}
+		$scope.house_decoration_statusItem = [
+			{id:1,lx:'house_decoration_status',name:'毛坯'},
+			{id:2,lx:'house_decoration_status',name:'清水'},
+			{id:3,lx:'house_decoration_status',name:'简装'},
+			{id:4,lx:'house_decoration_status',name:'精装'},
+			{id:5,lx:'house_decoration_status',name:'豪装'}
 		];
-		$scope.qyItem = [
-			{id:1,lx:'qy',name:'不限'},
-			{id:2,lx:'qy',name:'市辖区'},
-			{id:3,lx:'qy',name:'东城区'},
-			{id:4,lx:'qy',name:'南城区'},
-			{id:5,lx:'qy',name:'万江区'},
-			{id:6,lx:'qy',name:'厚街区'}
+		$scope.house_zoneItem = [
+			{id:1,lx:'house_zone',name:'不限'},
+			{id:2,lx:'house_zone',name:'市辖区'},
+			{id:3,lx:'house_zone',name:'东城区'},
+			{id:4,lx:'house_zone',name:'南城区'},
+			{id:5,lx:'house_zone',name:'万江区'},
+			{id:6,lx:'house_zone',name:'厚街区'}
 		];
 		$scope.zjItem = [
-			{id:1,lx:'zj',name:'100万以下'},
-			{id:2,lx:'zj',name:'100-150万'},
-			{id:3,lx:'zj',name:'150-200万'},
-			{id:4,lx:'zj',name:'200-250万'},
-			{id:5,lx:'zj',name:'250-300万'}
+			{id:1,lx:'zj',name:'100万以下',house_min_price:0,house_max_price:1000000},
+			{id:2,lx:'zj',name:'100-150万',house_min_price:1000000,house_max_price:1500000},
+			{id:3,lx:'zj',name:'150-200万',house_min_price:1500000,house_max_price:2000000},
+			{id:4,lx:'zj',name:'200-250万',house_min_price:2000000,house_max_price:2500000},
+			{id:5,lx:'zj',name:'250-300万',house_min_price:2500000,house_max_price:3000000}
 		];
-		$scope.fxItem = [
-			{id:1,lx:'fx',name:'一房'},
-			{id:2,lx:'fx',name:'两房'},
-			{id:3,lx:'fx',name:'三房'},
-			{id:4,lx:'fx',name:'四房'},
-			{id:5,lx:'fx',name:'五房'}
+		$scope.house_apartment_stylesItem = [
+			{id:1,lx:'house_apartment_styles',name:'一房'},
+			{id:2,lx:'house_apartment_styles',name:'两房'},
+			{id:3,lx:'house_apartment_styles',name:'三房'},
+			{id:4,lx:'house_apartment_styles',name:'四房'},
+			{id:5,lx:'house_apartment_styles',name:'五房'}
 		];
 		$scope.tsItem = [
-			{id:1,lx:'ts',name:'不限'},
-			{id:2,lx:'ts',name:'精装修'},
-			{id:3,lx:'ts',name:'带花园'},
-			{id:4,lx:'ts',name:'近地铁'},
-			{id:5,lx:'ts',name:'带飘窗'},
-			{id:6,lx:'ts',name:'不限购'}
+			{id:0,lx:'ts',name:'不限'},
+			{id:1,lx:'ts',name:'精装修'},
+			{id:2,lx:'ts',name:'带花园'},
+			{id:3,lx:'ts',name:'近地铁'},
+			{id:4,lx:'ts',name:'带飘窗'},
+			{id:5,lx:'ts',name:'不限购'},
+			{id:6,lx:'ts',name:'复式'},
+			{id:7,lx:'ts',name:'品牌企业'}
 		];
-		$scope.smItem = [
-			{id:1,lx:'sm',name:'不限'},
-			{id:2,lx:'sm',name:'即将开盘'},
-			{id:3,lx:'sm',name:'排卡中'},
-			{id:4,lx:'sm',name:'在售'},
-			{id:5,lx:'sm',name:'售罄'}
+		$scope.house_sale_statusItem = [
+			{id:1,lx:'house_sale_status',name:'不限'},
+			{id:2,lx:'house_sale_status',name:'即将开盘'},
+			{id:3,lx:'house_sale_status',name:'排卡中'},
+			{id:4,lx:'house_sale_status',name:'在售'},
+			{id:5,lx:'house_sale_status',name:'售罄'}
 		];
 		$scope.filterType = [
-			{id:1,lx:'zt',name:'状态'},
-			{id:2,lx:'qy',name:'区域'},
+			{id:1,lx:'house_decoration_status',name:'状态'},
+			{id:2,lx:'house_zone',name:'区域'},
 			{id:3,lx:'zj',name:'总价'},
-			{id:4,lx:'fx',name:'房型'},
-			{id:5,lx:'ts',name:'特色'},
-			{id:6,lx:'sm',name:'售卖状态'},
+			{id:4,lx:'house_apartment_styles',name:'房型'},
+			{id:5,lx:'house_featured',name:'特色'},
+			{id:6,lx:'house_sale_status',name:'售卖状态'},
 		];
 
 
@@ -137,12 +213,16 @@ angular.module('starter.controllers', [])
 		}
 		$scope.showFilterBox = !$scope.showFilterBox;
 		$scope.key = id;
+	}
+
 
 		$scope.filterItems = function(lx,fid,$index){
+			$scope.result = "";
 			//console.log(lx);
 			//console.log(fid);
 			//console.log($index);
 			$scope.showFilterBox = false;
+			$scope.showMoreFilterBox = false;
 			//回填筛选字段
 			$scope.filter.forEach(function(item){
 				if(item.lx == lx){
@@ -152,30 +232,62 @@ angular.module('starter.controllers', [])
 				}
 			})
 
-			$scope.queryArr[lx] = {fid:fid};
-			console.log($scope.queryArr);
+			//处理价格筛选
+			if(lx == 'zj'){
+				//$scope.queryArr['house_min_price'] = $scope.zjItem[$index].house_min_price;
+				//$scope.queryArr['house_max_price'] = $scope.zjItem[$index].house_max_price;
+				obj.house_min_price = $scope.zjItem[$index].house_min_price;
+				obj.house_max_price = $scope.zjItem[$index].house_max_price;
+			}else{
+				$scope.queryArr[lx] = {fid:fid};
+				var params = '';
+				for( var i in $scope.queryArr){
+					//console.log(i+':'+ $scope.queryArr[i].fid);
+					obj[i] = $scope.queryArr[i].fid;
+					params += '&filter['+ i +']='+$scope.queryArr[i].fid ;
+				}
+			}
+
+			//自定义价格
+			$scope.customerPrice = function(min_price,max_price){
+				if(min_price && max_price){
+					obj.house_min_price = min_price;
+					obj.house_max_price = max_price;
+				}
+				$scope.showFilterBox = false;
+			}
+
+
+			$scope.showLpInit.page = 1;
+			var params = '';
+			for(i in obj){
+				//console.log(i + ' : ' + obj[i]);
+				params = params + "&filter[" + i + "]=" + obj[i];
+			}
+
+			console.log(params);
+
+			$http.get(appInfo.apiUrl+'/house/?'+params.substr(1) + '&page='+$scope.showLpInit.page + '&page_size=' + $scope.showLpInit.pageSize)
+				.success(function(response){
+					console.log(response);
+					if(response.data.length>0){
+						$scope.result = response.data;
+					}
+					if(response.data.length<$scope.showLpInit.pageSize){
+						$scope.showLpInit.hasMore = false;
+					}
+					$scope.$broadcast('scroll.infiniteScrollComplete');
+
+					$scope.showLpInit.page++;
+				});
+
+
+			//House.get({filter:obj,page:$scope.showLpInit.page}).$promise.then(function(response) {
+			//	console.log(response);
+			//});
 		}
-	}
 
 
-	/************************************/
-
-	House.get({filter:[{House_sale_status:3},{house_zone_id:3}],page:$scope.showLpInit.page}).$promise.then(function(response){
-		console.log(response);
-		//if(response.data.length>0){
-		//	response.data.forEach(function(item){
-		//		$scope.result.push(item);
-		//	})
-		//}
-		//if(response.data.length<10){
-		//	$scope.showLpInit.hasMore = false;
-		//}
-		//$scope.$broadcast('scroll.infiniteScrollComplete');
-	});
-
-
-
-	/************************************/
 
 
 	$scope.showMoreFilter = function($filterFactor) {
@@ -184,13 +296,13 @@ angular.module('starter.controllers', [])
 		$scope.showMoreFilterBox = !$scope.showMoreFilterBox;
 		if($scope.moreItems.length == 0){
 			//$scope.moreItems =$scope.filter[4].items;
-			$scope.ts = $scope.filter[4].items;
+			$scope.house_featured = $scope.filter[4].items;
 			$scope.showTs = true;
 		}
 
 		$scope.moreTs = function(lx){
 			$scope.showTs = true;
-			$scope.ts = $scope.filter[4].items;
+			$scope.house_featured = $scope.filter[4].items;
 		}
 
 		$scope.moreFilterItem = function(moreFilterLx) {
@@ -203,32 +315,59 @@ angular.module('starter.controllers', [])
 		}
 	}
 
-	$tsFilterArr = [];
+	$house_featuredFilterArr = [];
 
-	$scope.getCheck = function(tsItem){
-		console.log(tsItem.isChecked);
-		console.log(tsItem.fid);
-
-		$tsFilterArr[tsItem.fid] = tsItem.isChecked;
-
-		console.log($tsFilterArr);
+	$scope.getCheck = function(house_featuredItem){
+		//console.log(house_featuredItem.isChecked);
+		//console.log(house_featuredItem.fid);
+		$house_featuredFilterArr[house_featuredItem.fid] = house_featuredItem.isChecked;
+		//console.log($house_featuredFilterArr);
 	}
 
 	$scope.submitTs = function(){
+		$scope.queryArr['house_featured'] = $house_featuredFilterArr;
+		obj.house_featured = $house_featuredFilterArr;
 		$scope.showMoreFilterBox = false;
+
+		var $house_featuredFilterStrArr = [];
+		var $house_featuredFilterStr = '';
+
+		for(var key in obj){
+
+			fparams = '';
+
+			for(j in obj[key]){
+				if(obj[key][j] == true){
+					$house_featuredFilterStrArr.push(j);
+				}
+			}
+			$house_featuredFilterStr = $house_featuredFilterStrArr.join();
+
+		}
+
+		params += "&filter[" + key + "]=" + $house_featuredFilterStr;
+
+		console.log(params);
+
 	}
 
-
-	$scope.moreFilterItems = function(lx,fid,$index){
-		//console.log(fid);
-		//console.log(lx);
-		//console.log($index);
-
-		$scope.showMoreFilterBox = false;
-		$scope.queryArr[lx] = {fid:fid};
-
-		console.log($scope.queryArr);
-	}
+	//
+	//$scope.moreFilterItems = function(lx,fid,$index){
+	//	//console.log(fid);
+	//	//console.log(lx);
+	//	//console.log($index);
+	//
+	//	$scope.showMoreFilterBox = false;
+	//	$scope.queryArr[lx] = {fid:fid};
+	//
+	//	for( var i in $scope.queryArr){
+	//		//console.log(i+':'+ $scope.queryArr[i].fid);
+	//		obj[i] = $scope.queryArr[i].fid;
+	//	}
+	//
+	//	//console.log($scope.queryArr);
+	//
+	//}
 
 })
 
@@ -720,7 +859,6 @@ angular.module('starter.controllers', [])
 })
 
 
-
 	.controller('houseZbCtrl', function($scope, $stateParams, $ionicHistory, HouseDetail, zbInfo, $rootScope, $http, $ionicPopup, $cordovaGeolocation){
 		if($stateParams.house_id){
 			$scope.house_id = parseInt($stateParams.house_id);
@@ -792,10 +930,78 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('concernCtrl', function($scope) {
 
-})
 
-.controller('messageCtrl', function($scope) {
+.controller('messageCtrl', function($location,$scope,$rootScope,$http) {
+    var c_id = 1;
 
-});
+    $http.get('http://app.tigonetwork.com/api/customer/getMemberInfo?customer_id=' + c_id)
+      .success(function(response){
+        console.log(response.data);
+        $rootScope.userData = response.data;
+
+        $scope.values =[];  //记录当前会话
+        $scope.message = "";  //初始化对话记录
+        ///var hasharr = $location.hash().split("&");
+        sessionStorage.setItem("localTime",Date.now());
+
+        var sender = response.data.customer_id; //document.getElementsByTagName("input").username.value;  //发送者ID（名字）
+        var dialogue = response.data.dialogue;
+        console.log(sender);
+        console.log(dialogue);
+
+        //提交按钮事件
+        $scope.send = function(){
+          var myDate = new Date();
+          var	showTime = myDate.getFullYear()+"-"+(myDate.getMonth()+1)+"-"+myDate.getDate()+"&nbsp;"+(myDate.getHours()<10 ? "0"+myDate.getHours() : myDate.getHours())+":"+(myDate.getMinutes()<10 ? "0"+myDate.getMinutes():myDate.getMinutes())+":"+(myDate.getSeconds()<10 ? "0"+myDate.getSeconds():myDate.getSeconds());
+          //console.log(showTime);
+          var aref = new Wilddog("https://qiyoon.wilddogio.com/dialogue/"+dialogue);
+          var val=$scope.content;
+          var sarr = [];
+          sarr[sender] = {"value":val,"username":sender,"time":Date.now(),"showtime":showTime};
+          aref.push(sarr);
+          $scope.content = "";
+        }
+
+        var ref = new Wilddog("https://qiyoon.wilddogio.com/dialogue/"+dialogue);
+
+        ref.on('value',loadData);
+        function loadData(pshot) {
+            var newarr = [];
+            var data,fasong = "",jieshou="";
+            pshot.forEach(function(snap){
+              data = snap.val();
+              for(var n in data){
+                if(sessionStorage.getItem("localTime")>data[n].time)
+                  continue;
+                if(n==sender)
+                  data[n].type = 1
+                else
+                  data[n].type = 0
+
+                //格式化时间戳
+                /*var d = Math.ceil((Date.now() - data[n].time)/1000);
+                 if( d/60 <= 60){
+                 data[n].showtime = Math.ceil(d/60)+"分钟前"
+                 }else if(d/60 > 60 && d/60 < 24*60){
+                 data[n].showtime = Math.ceil(d/3600)+"小时前"
+                 }else if(d/60 > 24*60) {
+                 data[n].showtime = Math.ceil(d/(3600*24))+"天前"
+                 }*/
+                newarr.push(data[n]);
+              }
+            });
+            $scope.message = newarr;
+            console.log($scope.message);
+            var html="";
+            angular.forEach(newarr,function(v,k){
+              html+='<li>'+v.username+'：'+v.value+'&nbsp;&nbsp;'+v.showtime+'</li>'
+            })
+            document.getElementById("message").innerHTML = html;
+            //$scope.message = $scope.message1.concat($scope.message2);
+            //console.log($scope.message=pshot.val())
+        }
+      })
+
+
+  });

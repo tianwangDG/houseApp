@@ -1,5 +1,22 @@
 <ion-view view-title="消息">
-  <ion-content>
-    消息页面
+  <div class="bar bar-header">
+    <div class="h1 title" style="font-family: '华文细黑';color:#000;">消息</div>
+  </div>
+  <ion-content class="has-header padding">
+
+
+    <div class="item item-input-inset" >
+      <label class="item-input-wrapper">
+        <input type="text" name="content" placeholder="说点什么吧……" ng-model="content">
+      </label>
+      <button class="button button-small" ng-click="send()">
+        发送
+      </button>
+    </div>
+
+    <div>
+      <ul id="message"></ul>
+    </div>
+
   </ion-content>
 </ion-view>

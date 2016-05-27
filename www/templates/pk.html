@@ -1,0 +1,166 @@
+<style>
+  .basicPk {text-align: center;margin:0;padding:0;font-size: .9em;}
+  .basicPk .item {padding:.4em .4em;}
+  .pkContainer .bar {background: none;}
+  .pkHeader{background:#f7dc69;padding:0 5em;padding:0 2em;background-color: #f7dc69;color:#fff;height:48px;}
+  .pkActive,.pkDeActive{padding:0;}
+  .pkActive a,.pkDeActive a{color:#000;margin: .5em 0em;padding:0;line-height:2.2em;border-top:1px solid #fff; border-bottom: 1px solid #fff;}
+  .pkActive a{background-color: #fff;}
+  .pkDeActive a{background: none;}
+</style>
+
+<ion-view view-title="PK对比" hide-nav-bar="true" class="pkContainer">
+  <div class="bar bar-header" style="background-color:#f7dc69;">
+    <button class="button button-icon icon ion-ios-arrow-left" ng-click="goBack()"></button>
+    <div class="h1 title" style="font-family: '华文细黑';">PK对比</div>
+  </div>
+
+  <div class="tabs tabs-top tabs-default pkHeader">
+    <div class="col" ng-class="{true:'pkActive', false:'pkDeActive' }[active_content=='zbpz']">
+      <a href class="tab-item disable-user-behavior"
+         ng-class="{active: active_content=='zbpz'}" ng-click="setActiveContent('zbpz')" style="border-left: 1px solid #fff;border-top-left-radius: .3em;border-bottom-left-radius: .3em;">
+        周边配置
+      </a>
+    </div>
+    <div class="col" ng-class="{true:'pkActive', false:'pkDeActive' }[active_content=='basicInfo']">
+      <a href class="tab-item disable-user-behavior"
+         ng-class="{active: active_content=='basicInfo'}" ng-click="setActiveContent('basicInfo')">
+        楼盘信息
+      </a>
+    </div>
+    <div class="col" ng-class="{true:'pkActive', false:'pkDeActive' }[active_content=='fwhx']">
+      <a href class="tab-item disable-user-behavior"
+         ng-class="{active: active_content=='fwhx'}" ng-click="setActiveContent('fwhx')" style="border-right: 1px solid #fff;border-top-right-radius: .3em;border-bottom-right-radius:.3em;">
+        房屋户型
+      </a>
+    </div>
+  </div>
+
+
+  <!--楼盘信息开始-->
+  <ion-content class="has-header has-subheader pk" style="background-color: #fff;"  ng-show="active_content=='basicInfo'">
+    <div class="item item-toggle" style="border:none;">
+      隐藏相同
+      <label class="toggle toggle-energized">
+        <input type="checkbox">
+        <div class="track">
+          <div class="handle"></div>
+        </div>
+      </label>
+    </div>
+
+    <div class="row" style="padding-top: .8em;">
+      <div class="col-20" style="display:flex;justify-content:center;align-items:center;border: 1px solid #ccc;text-align: center;">对比项目</div>
+      <div class="col-80 row" style="padding-top:0;padding-bottom: 0;">
+        <div class="col" ng-repeat="lpItem in pkhxLpArr" style="position:relative;margin:0 .3em;border:1px solid #ccc;box-shadow: 1px 1px 2px #d5d5d5;">
+          <span style="display:block;position:absolute;right:0;top:-0.2em;"><i class="ion ion-ios-close" style="color:#fe6553;font-size: 1.2em;"></i></span>
+          <img ng-src="{{lpItem.thumbnail}}" style="display:block;width:100%;" />
+          <h4 style="font-family:'华文细黑';font-size: 1em;margin-top:0;margin-bottom: 0;">{{lpItem.name}}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="background-color: #e7e7e7;line-height: 1.8em;margin-top:.3em;margin-bottom:.5em;padding:0;padding-left:.4em;">
+      <h2 style="font-family: '华文细黑';font-size: 1em;margin:0;line-height: 1.8em;">楼盘信息</h2>
+    </div>
+
+    <div class="row basicPk">
+      <div class="col-20">
+        <ul class="list" style="padding:0;margin:0;">
+          <li class="item" ng-repeat="field in compareFields" style="font-size: 1em;line-height: 2em;">{{field.field}}</li>
+        </ul>
+      </div>
+
+      <div class="col-80 row" style="background-color: #eee;padding:0;margin:0;">
+        <div class="col list" ng-repeat="lpItem in pkhxLpArr" style="padding:0;margin:0;">
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.lpPrice}}</li>
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.zt}}</li>
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.jzjl}}</li>
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.cqnx}}</li>
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.ghhs}}</li>
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.ghcw}}</li>
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.rjl}}</li>
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.lhl}}</li>
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.sdrq}}</li>
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.develop}}</li>
+        </div>
+      </div>
+    </div>
+
+  </ion-content>
+  <!--楼盘信息结束-->
+
+  <!--周边配置开始-->
+  <ion-content has-header="true" class="has-subheader pk" ng-show="active_content=='zbpz'">
+    <div class="item item-toggle" style="border:none;">
+      隐藏相同
+      <label class="toggle toggle-energized">
+        <input type="checkbox">
+        <div class="track">
+          <div class="handle"></div>
+        </div>
+      </label>
+    </div>
+
+    <div class="row" style="padding-top: .8em;">
+      <div class="col-20" style="display:flex;justify-content:center;align-items:center;border: 1px solid #ccc;text-align: center;">对比项目</div>
+      <div class="col-80 row" style="padding-top:0;padding-bottom: 0;">
+        <div class="col" ng-repeat="lpItem in pkhxLpArr" style="position:relative;margin:0 .3em;border:1px solid #ccc;box-shadow: 1px 1px 2px #d5d5d5;">
+          <span style="display:block;position:absolute;right:0;top:-0.2em;"><i class="ion ion-ios-close" style="color:#fe6553;font-size: 1.2em;"></i></span>
+          <img ng-src="{{lpItem.thumbnail}}" style="display:block;width:100%;" />
+          <h4 style="font-family:'华文细黑';font-size: 1em;margin-top:0;margin-bottom: 0;">{{lpItem.name}}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="background-color: #e7e7e7;line-height: 1.8em;margin-top:.3em;margin-bottom:.5em;padding:0;padding-left:.4em;">
+      <h2 style="font-family: '华文细黑';font-size: 1em;margin:0;line-height: 1.8em;">周边配置</h2>
+    </div>
+
+    <div class="row basicPk">
+      <div class="col-20">
+        <ul class="list" style="padding:0;margin:0;">
+          <li class="item" ng-repeat="field in comparePt" style="font-size: 1em;line-height: 2em;">{{field.field}}</li>
+        </ul>
+      </div>
+
+      <div class="col-80 row" style="background-color: #eee;padding:0;margin:0;">
+        <div class="col list" ng-repeat="lpItem in pkhxLpArr" style="padding:0;margin:0;">
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.jlzx}}</li>
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.jlqg}}</li>
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.jlxx}}</li>
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.jlyy}}</li>
+          <li class="item" style="font-size: 1em;line-height: 2em;">{{lpItem.jlsc}}</li>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+  <!--周边配置结束-->
+
+
+  <!--房屋户型开始-->
+  <ion-content has-header="true" class="has-subheader pk" ng-show="active_content=='fwhx'">
+    <div class="row" style="padding:0;margin-bottom: 1em;border-bottom: 1px solid #ddd;" ng-repeat="pkhxLp in pkhxLpArr track by $index">
+      <div class="col-35" style="padding:0;">
+        <h3 style="font-family: '微软雅黑';font-size: 1.4em;padding-top:0.6em;padding-left: 0.4em;">{{pkhxLp.name}}-{{JSON.stringify($index)}}</h3>
+        <div class="list" style="padding:0;margin:0;">
+          <li class="item" style="padding:0.3em;font-size: 1em;line-height: 2em;border-left:none;border-right:none;border-top: none;">户型：{{pkhxLp.allHx[hxIndex].name}}</li>
+          <li class="item" style="padding:0.3em;font-size: 1em;line-height: 2em;border-left:none;border-right:none;">座落：{{pkhxLp.allHx[hxIndex].ldName}}</li>
+          <li class="item" style="padding:0.3em;font-size: 1em;line-height: 2em;border-left:none;border-right:none;">单元：{{pkhxLp.allHx[hxIndex].dy}}</li>
+          <li class="item" style="padding:0.3em;font-size: 1em;line-height: 2em;border-left:none;border-right:none;">层数：{{pkhxLp.allHx[hxIndex].cs}}</li>
+          <li class="item" style="padding:0.3em;font-size: 1em;line-height: 2em;border-left:none;border-right:none;">面积：{{pkhxLp.allHx[hxIndex].mj}}</li>
+        </div>{{pk}}
+      </div>
+      <div class="col-60" style="padding-left: 10px;">
+        <ion-slides id="ionSlides" options="options" slider="$index" style="width:300px;height:200px;" delegate-handle="hxHandle">
+          <ion-slide-page ng-repeat="pkhxItem in pkhxItemArr" style="display:flex;justify-content: flex-start;align-items: center;">
+            <img ng-src="{{pkhxItem.img}}" alt="" style="border:1px solid #ddd;" />
+          </ion-slide-page>
+        </ion-slides>
+      </div>
+    </div>
+  </ion-content>
+  <!--房屋户型结束-->
+
+
+</ion-view>
