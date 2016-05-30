@@ -1,4 +1,4 @@
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'userController', 'concernController', 'ngCordova','ion-datetime-picker'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'userController', 'calculator', 'concernController', 'ngCordova','ion-datetime-picker'])
 
 .run(function($ionicPlatform,$rootScope,$state,$ionicHistory) {
   $ionicPlatform.ready(function() {
@@ -22,9 +22,20 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 })
 
 .constant('appInfo', {
+  commonApi:'http://app.tigonetwork.com/api/common',
 	apiUrl: 'http://app.tigonetwork.com/api',
 	customerApi: 'http://app.tigonetwork.com/api/customer'
 })
+
+.constant('AUTH_EVENTS', {
+  notAuthenticated: 'auth-not-authenticated',
+  notAuthorized: 'auth-not-authorized'
+})
+
+.constant('USER', {
+  customer_id: null
+})
+
 
 //日期时间选择器：ion-datetime-picker
 .run(function($ionicPickerI18n) {
@@ -34,7 +45,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     $ionicPickerI18n.cancel = "取消";
 })
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $compileProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $compileProvider, USER) {
 //.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $compileProvider, ionicDatePickerProvider) {
   $ionicConfigProvider.platform.ios.tabs.style('standard');
   $ionicConfigProvider.platform.ios.tabs.position('bottom');
@@ -120,7 +131,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     views: {
       'tab-concern': {
         templateUrl: 'templates/tab-concern.html',
-        controller: 'concernCtrl'
+        controller: 'concernCtrl',
+        data:{
+          customer_id: USER.customer_id
+        }
       }
     }
   })
@@ -133,7 +147,27 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 			  controller: 'messageCtrl'
 		  }
 	  }
-  });
+  })
+
+  .state('tab.guide', {
+      url: '/guide',
+      views: {
+        'tab-index': {
+          templateUrl: 'templates/tab-guide.html',
+          controller: 'guideCtrl'
+        }
+      }
+    })
+
+  .state('tab.about', {
+      url: '/about',
+      views: {
+        'tab-index': {
+          templateUrl: 'templates/tab-about.html',
+          controller: 'aboutCtrl'
+        }
+      }
+    });
 
 
 
@@ -211,12 +245,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         .state('login',{
             url:'/login',
             templateUrl: 'templates/login.html',
-            controller:'loginCtrl'
+            controller:'loginCtrl',
+            data:{
+              customer_id: USER.customer_id
+            }
         })
         .state('memberInfo',{
             url:'/memberInfo',
             templateUrl: 'templates/memberInfo.html',
-            controller:'memberInfoCtrl'
+            controller:'memberInfoCtrl',
+            data:{
+              customer_id: USER.customer_id
+            }
         })
         .state('memberRecommend',{
             url:'/memberRecommend',
@@ -248,9 +288,56 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       //})
       //
 
-
-
-
   $urlRouterProvider.otherwise('/tab/index');
 
-});
+})
+
+
+
+  .run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
+    $rootScope.$on('$stateChangeStart', function (event,next, nextParams, fromState) {
+
+       //console.log(event);
+       //console.log(next);
+       //console.log(nextParams);
+       //console.log(fromState);
+
+      if ('data' in next && 'customer_id' in next.data) {
+        var customer_id = next.data.customer_id;
+        if (!AuthService.isAuthorized(customer_id)) {
+          console.log(customer_id);
+          event.preventDefault();
+          $state.go($state.next, {}, {reload: true});
+          $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
+        }
+      }
+
+      if (!AuthService.isAuthenticated()) {
+        if (next.name == 'memberInfo' || next.name == 'tab.concern') {
+          event.preventDefault();
+          $state.go('login');
+        }
+      }
+
+    });
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

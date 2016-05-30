@@ -5,11 +5,13 @@
         <div class="row tx padding" style="display: table !important; width: 100% !important; height: 80px;"  ng-click="goToMemberInfo()">
           <div class="col-90 row" >
             <div class="col-33">
-              <img src="img/tx.jpg" />
+              <img ng-if="userData.customer_thumb_url" ng-src="{{userData.customer_thumb_url}}" />
+              <img src="img/tx.jpg" ng-if="!userData.customer_thumb_url" />
             </div>
-            <div class="col-67" style="padding-top:6px;">
-              <h3>天网</h3>
-              <h4>188****8888</h4>
+            <div class="col-67" style="padding-top:6px; font-family: '华文细黑';">
+              <h3 ng-if="formatedNickname">{{formatedNickname}}</h3>
+              <h3 ng-if="!formatedNickname">登录</h3>
+              <h4 ng-if="formatedTelephone">{{formatedTelephone}}</h4>
             </div>
           </div>
           <div class="col-10" style="display: table-cell; vertical-align: middle;">
@@ -55,11 +57,11 @@
         </div>
 
         <div class="list my">
-          <a class="item item-icon-left" href="#">
+          <a class="item item-icon-left" href="#/tab/guide">
             <i class="icon ion-ios-medical-outline"></i>
             用户指南
           </a>
-          <a class="item item-icon-left" href="#">
+          <a class="item item-icon-left" href="#/tab/about">
             <i class="icon ion-ios-people"></i>
             关于我们
           </a>

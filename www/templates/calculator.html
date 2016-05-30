@@ -1,12 +1,12 @@
-<ion-view hide-nav-bar="true" style="background-color: #37ac66;" class="calculator">
+<ion-view hide-nav-bar="true" style="background-color: #fafafa;" class="calculator">
   <div class="bar bar-header" style="background: none;">
-    <button class="button button-icon icon ion-ios-arrow-left" ng-click="goBackIndex()" style="color:#fff;"></button>
-    <div class="h1 title" style="font-family: '华文细黑';color:#fff;">购房计算器</div>
+    <button class="button button-icon icon ion-ios-arrow-left" ng-click="goToIndex()" style="color:#333;"></button>
+    <div class="h1 title" style="font-family: '华文细黑';color:#333;">购房计算器</div>
   </div>
 
   <div class="tabs tabs-top tabs-virtual row calculatorContainer">
     <div class="calculatorItem col">
-    <a href class="tab-item disable-user-behavior" style="border-left: 1px solid #fff;border-top-left-radius: .3em;border-bottom-left-radius: .3em;"
+    <a href class="tab-item disable-user-behavior"
        ng-class="{active: active_content=='gjjdk'}" ng-click="setActiveContent('gjjdk')">
       公积金贷款
     </a>
@@ -18,7 +18,7 @@
     </a>
     </div>
     <div class="calculatorItem col">
-    <a href class="tab-item disable-user-behavior" style="border-right: 1px solid #fff;border-top-right-radius: .3em;border-bottom-right-radius:.3em;"
+    <a href class="tab-item disable-user-behavior"
        ng-class="{active: active_content=='zhdk'}" ng-click="setActiveContent('zhdk')">
       组合贷款
     </a>

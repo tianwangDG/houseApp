@@ -1,6 +1,57 @@
 angular.module('starter.controllers', [])
 
-.controller('indexCtrl', function($scope, $rootScope, $state, $ionicSlideBoxDelegate,$http, appInfo, Slider, House) {
+
+.controller('AppCtrl', function($scope, $rootScope, $state, $ionicPopup, AuthService, AUTH_EVENTS) {
+  $scope.goToLogin = function(){
+    $state.go('login');
+  }
+
+  //$scope.$on("$ionicView.enter", function(){
+  //  $scope.customer_id = AuthService.get_Customer_id();
+  //})
+
+  $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
+    AuthService.logout();
+    $state.go('login');
+    var alertPopup = $ionicPopup.alert({
+      title: '会话信息丢失!',
+      template: '请重新登陆'
+    });
+  });
+
+  $scope.test = "您好";
+
+})
+
+
+.controller('indexCtrl', function($scope, $rootScope, $state, $ionicSlideBoxDelegate,$http, appInfo, Slider, House, AuthService) {
+
+  //格式化手机号码
+  var replaceChars = function(str,length,fromBegin,mask){
+    mask = mask ? mask : '*';
+    var replacement = '';
+    for(var i=0; i<length; i++){
+      replacement += mask;
+    }
+    if(fromBegin){
+      var regexp = new RegExp('.{1,' + length + '}');
+      return str.replace(regexp, replacement);
+    } else {
+      var regexp = new RegExp('.{' + (str.length - length) + ',' + str.length + '}');
+      return str.substring(0,(str.length - length)) + str.replace(regexp, replacement);
+    }
+  }
+
+  var customer_id = AuthService.get_Customer_id();
+
+  if(customer_id){
+    $http.get(appInfo.customerApi + '/getMemberInfo?customer_id=' + parseInt(customer_id))
+      .success(function(response){
+        $scope.userData = response.data;
+        $scope.userData.customer_telephone ? $scope.formatedTelephone = replaceChars($scope.userData.customer_telephone,4,false,'*'):false;
+        $scope.userData.customer_nickname ? $scope.formatedNickname = $scope.userData.customer_nickname: $scope.formatedNickname = '用户';
+      })
+  }
 
 
 	$scope.goToMemberInfo = function(){
@@ -12,6 +63,7 @@ angular.module('starter.controllers', [])
 		$scope.sliders = response.data;
 		$ionicSlideBoxDelegate.update();
 	})
+
 
 	//楼盘数据展示
 	$scope.showLpInit = {
@@ -463,241 +515,6 @@ angular.module('starter.controllers', [])
 
 
 .controller('houseZslCtrl', function($scope,$rootScope,$stateParams,HouseDetail,$ionicSlideBoxDelegate, $ionicScrollDelegate, $window, $state) {
-	//$scope.responses = {
-	//	"data": {
-	//		"house_id": "3",
-	//		"house_create_time": "2016-05-13 06:12:01",
-	//		"house_update_time": "2016-05-18 14:53:46",
-	//		"house_sale_status": "排卡中",
-	//		"house_name": "万达公馆",
-	//		"house_limit_years": "0",
-	//		"house_featured": [
-	//			"不限",
-	//			"精装修",
-	//			"近地铁"
-	//		],
-	//		"house_type": "商铺",
-	//		"house_decoration_status": "简装",
-	//		"house_description": "品牌企业,南北对流,车位充足",
-	//		"house_recommend": "1",
-	//		"house_min_area": "100",
-	//		"house_max_area": "150",
-	//		"house_commission": "0",
-	//		"house_commission_description": "佣金描述",
-	//		"house_longtitude": "23.0269970000",
-	//		"house_latitude": "113.7582310000",
-	//		"house_plan_family": "0",
-	//		"house_parking_num": "0",
-	//		"house_address": "东莞市东城区主山村2",
-	//		"house_zone_id": "3",
-	//		"house_fee": "0.0",
-	//		"house_company": "物业公司",
-	//		"house_average_price": "10000",
-	//		"house_max_price": "850000",
-	//		"house_min_price": "1000000",
-	//		"house_discount_info": "优惠信息",
-	//		"house_discount_description": "",
-	//		"house_sales_tel": "电话号码",
-	//		"house_sales_address": "买楼地址",
-	//		"house_open_time": "2015-12-18",
-	//		"house_handing_time": "2016-05-12",
-	//		"house_volume": "",
-	//		"house_green": "",
-	//		"house_water": "",
-	//		"house_heat": "",
-	//		"house_center_distance": "",
-	//		"house_subway_distance": "",
-	//		"house_school_distance": "",
-	//		"house_hospital_distance": "",
-	//		"house_market_distance": "",
-	//		"house_distribution_pid": "2",
-	//		"house_slider_pid": "26",
-	//		"house_main_pid": "26",
-	//		"house_thumb_pid": "2",
-	//		"house_remark": "",
-	//		"house_develop_id": "1",
-	//		"house_admin_uid": "0",
-	//		"house_check_status": "0",
-	//		"house_apartment_styles": [
-	//			"一房",
-	//			"二房"
-	//		],
-	//		"house_distribution_image_source_url": "http://app.tigonetwork.com/public/img/house/ld.jpg",
-	//		"house_distribution_image_origin_width": "1600",
-	//		"house_distribution_image_origin_height": "1249",
-	//		"house_slider_src": "http://app.tigonetwork.com/public/img/sliders/slider2.jpg",
-	//		"house_main_src": "http://app.tigonetwork.com/public/img/sliders/slider2.jpg",
-	//		"house_thumb_src": "http://app.tigonetwork.com/public/img/lp/lp2.jpg",
-	//		"house_zone_name": "南城",
-	//		"sjt": [
-	//			"http://app.tigonetwork.com/public/img/sliders/slider4.jpg",
-	//			"http://app.tigonetwork.com/public/2016-05-17/573a8b4fa02ce.jpg",
-	//			"http://app.tigonetwork.com/public/2016-05-17/573a8b59a3094.jpg"
-	//		],
-	//		"ybj": [
-	//			"http://app.tigonetwork.com/public/2016-05-16/57392aed2c10c.jpg",
-	//			"http://app.tigonetwork.com/public/2016-05-16/57392af5396ab.jpg",
-	//			"http://app.tigonetwork.com/public/img/sliders/slider1.jpg"
-	//		],
-	//		"buildings": [
-	//			{
-	//				"building_id": "1",
-	//				"building_create_time": "2016-05-17 15:41:13",
-	//				"building_update_time": "2016-05-19 10:39:14",
-	//				"building_name": "第一栋",
-	//				"building_position_x": "548",
-	//				"building_position_y": "453",
-	//				"building_open_time": "2015-12-12",
-	//				"building_unit": "3",
-	//				"building_floor": "20",
-	//				"building_family": "50",
-	//				"building_remark": "第一栋哦, 嗯嗯嗯",
-	//				"house_id": "3",
-	//				"building_admin_uid": "1",
-	//				"building_check_status": "1",
-	//				"apartments": [
-	//					{
-	//						"apartment_id": "1",
-	//						"apartment_create_time": "2016-05-17 16:30:08",
-	//						"apartment_update_time": "2016-05-17 16:30:08",
-	//						"apartment_title": "三室一厅",
-	//						"apartment_room_num": "3",
-	//						"apartment_hall_num": "1",
-	//						"apartment_toilet_num": "1",
-	//						"apartment_area": "150",
-	//						"apartment_price": "2000000",
-	//						"apartment_featured_one": "大户型",
-	//						"apartment_featured_two": "朝南",
-	//						"apartment_featured_three": "低价",
-	//						"house_id": "3",
-	//						"building_id": "1",
-	//						"apartment_admin_uid": "3",
-	//						"apartment_check_status": "1",
-	//						"image": "http://app.tigonetwork.com/public/img/house/hxt/hxt1.png"
-	//					},
-	//					{
-	//						"apartment_id": "2",
-	//						"apartment_create_time": "2016-05-17 16:30:24",
-	//						"apartment_update_time": "2016-05-17 16:30:24",
-	//						"apartment_title": "三室二厅",
-	//						"apartment_room_num": "2",
-	//						"apartment_hall_num": "2",
-	//						"apartment_toilet_num": "1",
-	//						"apartment_area": "160",
-	//						"apartment_price": "2100000",
-	//						"apartment_featured_one": "大户型",
-	//						"apartment_featured_two": "朝南",
-	//						"apartment_featured_three": "高性价比",
-	//						"house_id": "3",
-	//						"building_id": "1",
-	//						"apartment_admin_uid": "3",
-	//						"apartment_check_status": "1",
-	//						"image": "http://app.tigonetwork.com/public/img/house/hxt/hxt2.png"
-	//					}
-	//				]
-	//			},
-	//			{
-	//				"building_id": "2",
-	//				"building_create_time": "2016-05-17 16:29:50",
-	//				"building_update_time": "2016-05-19 10:39:21",
-	//				"building_name": "第二栋",
-	//				"building_position_x": "830",
-	//				"building_position_y": "700",
-	//				"building_open_time": "2015-12-08",
-	//				"building_unit": "2",
-	//				"building_floor": "40",
-	//				"building_family": "80",
-	//				"building_remark": "第二栋哦, 嗯嗯嗯",
-	//				"house_id": "3",
-	//				"building_admin_uid": "1",
-	//				"building_check_status": "1",
-	//				"apartments": [
-	//					{
-	//						"apartment_id": "3",
-	//						"apartment_create_time": "2016-05-17 16:30:35",
-	//						"apartment_update_time": "2016-05-17 16:30:35",
-	//						"apartment_title": "三室二厅11",
-	//						"apartment_room_num": "1",
-	//						"apartment_hall_num": "1",
-	//						"apartment_toilet_num": "1",
-	//						"apartment_area": "100",
-	//						"apartment_price": "2110000",
-	//						"apartment_featured_one": "大户型1",
-	//						"apartment_featured_two": "朝南1",
-	//						"apartment_featured_three": "高性价比1",
-	//						"house_id": "3",
-	//						"building_id": "2",
-	//						"apartment_admin_uid": "3",
-	//						"apartment_check_status": "1",
-	//						"image": "http://app.tigonetwork.com/public/img/house/hxt/hxt3.png"
-	//					}
-	//				]
-	//			}
-	//		],
-	//		"apartments": [
-	//			{
-	//				"apartment_id": "1",
-	//				"apartment_create_time": "2016-05-17 16:30:08",
-	//				"apartment_update_time": "2016-05-17 16:30:08",
-	//				"apartment_title": "三室一厅",
-	//				"apartment_room_num": "3",
-	//				"apartment_hall_num": "1",
-	//				"apartment_toilet_num": "1",
-	//				"apartment_area": "150",
-	//				"apartment_price": "2000000",
-	//				"apartment_featured_one": "大户型",
-	//				"apartment_featured_two": "朝南",
-	//				"apartment_featured_three": "低价",
-	//				"house_id": "3",
-	//				"building_id": "1",
-	//				"apartment_admin_uid": "3",
-	//				"apartment_check_status": "1",
-	//				"image": "http://app.tigonetwork.com/public/img/house/hxt/hxt1.png"
-	//			},
-	//			{
-	//				"apartment_id": "2",
-	//				"apartment_create_time": "2016-05-17 16:30:24",
-	//				"apartment_update_time": "2016-05-17 16:30:24",
-	//				"apartment_title": "三室二厅",
-	//				"apartment_room_num": "2",
-	//				"apartment_hall_num": "2",
-	//				"apartment_toilet_num": "1",
-	//				"apartment_area": "160",
-	//				"apartment_price": "2100000",
-	//				"apartment_featured_one": "大户型",
-	//				"apartment_featured_two": "朝南",
-	//				"apartment_featured_three": "高性价比",
-	//				"house_id": "3",
-	//				"building_id": "1",
-	//				"apartment_admin_uid": "3",
-	//				"apartment_check_status": "1",
-	//				"image": "http://app.tigonetwork.com/public/img/house/hxt/hxt2.png"
-	//			},
-	//			{
-	//				"apartment_id": "3",
-	//				"apartment_create_time": "2016-05-17 16:30:35",
-	//				"apartment_update_time": "2016-05-17 16:30:35",
-	//				"apartment_title": "三室二厅11",
-	//				"apartment_room_num": "1",
-	//				"apartment_hall_num": "1",
-	//				"apartment_toilet_num": "1",
-	//				"apartment_area": "100",
-	//				"apartment_price": "2110000",
-	//				"apartment_featured_one": "大户型1",
-	//				"apartment_featured_two": "朝南1",
-	//				"apartment_featured_three": "高性价比1",
-	//				"house_id": "3",
-	//				"building_id": "2",
-	//				"apartment_admin_uid": "3",
-	//				"apartment_check_status": "1",
-	//				"image": "http://app.tigonetwork.com/public/img/house/hxt/hxt3.png"
-	//			}
-	//		],
-	//		"house_develop_name": "金湖地产"
-	//	},
-	//	"status": true
-	//};
-
 
 	if($stateParams.house_id){
 		$scope.house_id = parseInt($stateParams.house_id);
@@ -919,6 +736,35 @@ angular.module('starter.controllers', [])
 
 
 
+.controller('aboutCtrl', function($scope, $http, appInfo){
+    $http.get(appInfo.commonApi + '/about')
+      .success(function(data){
+        //console.log(data);
+        if(data.data.length > 0){
+          $scope.content = data.data;
+        }else{
+          $scope.content = '暂无内容';
+        }
+      })
+      .error(function(){
+        $scope.content = '暂无内容';
+      })
+})
+
+.controller('guideCtrl', function($scope, $http, appInfo){
+    $http.get(appInfo.commonApi + '/guide')
+      .success(function(data){
+        console.log(data);
+        if(data.data.length > 0){
+          $scope.content = data.data;
+        }else{
+          $scope.content = '暂无内容';
+        }
+      })
+      .error(function(){
+        $scope.content = '暂无内容';
+      })
+})
 
 
 
@@ -926,8 +772,8 @@ angular.module('starter.controllers', [])
 
 
 
-.controller('carCtrl', function($scope) {
-
+.controller('carCtrl', function($scope, AuthService) {
+    $scope.customer_id = AuthService.get_Customer_id();
 })
 
 

@@ -28,7 +28,7 @@ angular.module('userController', [])
 
 
 
-	.controller('loginCtrl', function($scope,$rootScope,$interval, $state,$http,appInfo){
+	.controller('loginCtrl', function($scope,$rootScope,$interval, $state,$http,appInfo,$ionicPopup, AuthService, $ionicHistory){
 		$scope.customer = {};
 		$scope.verifyBtn = true;
 		$scope.submitBtn = true;
@@ -44,7 +44,7 @@ angular.module('userController', [])
 			}
 		});
 
-		var customer_openid = "33333333333";
+		var customer_openid = "123456789";
 
 		function checkWxLogin(customer_openid,customer_thumb_url){
 			var customer_thumb_url = customer_thumb_url ? customer_thumb_url : '';
@@ -118,11 +118,38 @@ angular.module('userController', [])
 			}
 		}
 
+    //////////////////
+
+
+    $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+        $scope.from = fromState.name;
+    });
+
+
+    $scope.$on("$ionicView.enter", function(){
+      $scope.loginData = {};
+    })
+    $scope.loginData = {};
+
+    $scope.login = function(customer) {
+      AuthService.login(customer.customer_telephone, customer.code, customer_openid).then(function(authenticated) {
+
+        //$state.go('memberInfo', {}, { reload: true });
+        $state.go($scope.from, {}, { reload: true });
+
+      }, function(err) {
+        var alertPopup = $ionicPopup.alert({
+          title: '登录失败',
+          template: '验证信息不正确!'
+        });
+      });
+    };
+
 
 
 	})
 
-	.controller('memberInfoCtrl', function($scope, $rootScope, $state, $ionicModal, $http, appInfo, $window){
+	.controller('memberInfoCtrl', function($scope, $rootScope, $state, $ionicModal, $http, appInfo, $window, AuthService){
 		$scope.goBackIndex = function () {
 			$state.go('tab.index');
 		}
@@ -153,11 +180,14 @@ angular.module('userController', [])
 		}
 
 		//获取并展示数据
-		var c_id = 1;
+		//var c_id = 1;
 
-		$http.get('http://app.tigonetwork.com/api/customer/getMemberInfo?customer_id=' + c_id)
+    $scope.customer_id = AuthService.get_Customer_id();
+    console.log($scope.customer_id);
+
+		$http.get('http://app.tigonetwork.com/api/customer/getMemberInfo?customer_id=' + parseInt($scope.customer_id))
 			.success(function(response){
-				console.log(response.data);
+				//console.log(response.data);
 				$rootScope.userData = response.data;
 
 				$scope.customer_industry = $rootScope.userData.customer_industry;
@@ -517,10 +547,46 @@ angular.module('userController', [])
 
 
 
-	.controller('memberFeedbackCtrl', function($scope, $state){
+	.controller('memberFeedbackCtrl', function($scope, $http, $state, $ionicPopup, appInfo, AuthService){
 		$scope.goBackIndex = function () {
 			$state.go('tab.index');
 		}
+
+    $scope.feed = {
+      content:''
+    };
+
+    var customer_id = AuthService.get_Customer_id();
+
+    $scope.submitFeed = function(){
+      $http({
+        method:'POST',
+        url: appInfo.commonApi + '/feedback',
+        data:{ feedback_content: $scope.feed.content, customer_id:customer_id },
+        headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}
+      })
+        .success(function(response){
+            var alertPopup = $ionicPopup.alert({
+              title: '提示',
+              template: '非常感谢您的反馈，我们会继续努力！'
+            });
+
+            alertPopup.then(function(res) {
+              $state.go('tab.index');
+            });
+        })
+
+        .error(function(){
+          var alertPopup = $ionicPopup.alert({
+            title: '提示',
+            template: '反馈信息提交不成功，请稍后尝试！'
+          });
+
+          alertPopup.then(function(res) {
+            $state.go('tab.index');
+          });
+        })
+    }
 
 	})
 

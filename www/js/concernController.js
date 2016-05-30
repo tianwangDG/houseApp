@@ -1,8 +1,9 @@
 angular.module('concernController', [])
 
 
-.controller('concernCtrl', function($scope, $ionicModal, $ionicHistory,$http, $window, $ionicPopup, $state,appInfo) {
-    var customer_id = 1;
+.controller('concernCtrl', function($scope, $ionicModal, $ionicHistory,$http, $window, $ionicPopup, $state,appInfo, AuthService) {
+
+    var customer_id = AuthService.get_Customer_id();
 
     $scope.active_content = 'booked';
     $scope.setActiveContent = function(active_content){
@@ -13,7 +14,7 @@ angular.module('concernController', [])
     $http.get(appInfo.apiUrl + '/reservation/?customer_id=' + customer_id)
       .success(function(response){
         $scope.reservationArr = response.data;
-        console.log($scope.reservationArr);
+        //console.log($scope.reservationArr);
       })
 
 
