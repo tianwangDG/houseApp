@@ -1,4 +1,4 @@
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'userController', 'calculator', 'concernController', 'ngCordova','ion-datetime-picker'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'userController', 'calculator', 'concernController', 'ngCordova','ion-datetime-picker','jrCrop'])
 
 .run(function($ionicPlatform,$rootScope,$state,$ionicHistory) {
   $ionicPlatform.ready(function() {
@@ -278,6 +278,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         url: '/pk?param',
         templateUrl: 'templates/pk.html',
         controller: 'pkCtrl'
+      })
+
+      .state('getDiscount',{
+        url:'/getDiscount?customer_id?house_id',
+        templateUrl: 'templates/getDiscount.html',
+        controller:'getDiscountCtrl',
+        data:{
+          customer_id: USER.customer_id
+        }
       })
 
 

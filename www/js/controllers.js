@@ -423,7 +423,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('houseCtrl', function($scope,$stateParams,HouseDetail,$state){
+.controller('houseCtrl', function($scope,$stateParams,$http,HouseDetail,$state,appInfo,AuthService){
 	//console.log($stateParams.id);
 	var house_id = parseInt($stateParams.id);
 	HouseDetail.get({id:house_id}).$promise.then(function(response){
@@ -431,11 +431,166 @@ angular.module('starter.controllers', [])
 		$scope.descs = $scope.lpInfo.house_description.split(',');
 	});
 
+  var customer_id = AuthService.get_Customer_id();
+
+  //判断是否关注
+  $scope.isConcern = false;
+  $http.get(appInfo.apiUrl + '/concern/is_concerned?customer_id=' + customer_id + '&house_id=' + house_id)
+    .success(function(response){
+      $scope.isConcern = response.status;
+    })
+
+  $scope.changeConcern = function(isConcern){
+    if(isConcern){
+      //取消关注
+      $http({
+        method:'POST',
+        url: appInfo.apiUrl + '/concern/cancel',
+        data:{ customer_id:customer_id, house_id:house_id },
+        headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}
+      })
+        .success(function(response){
+          //console.log(response);
+          //$window.location.reload(true);
+          $scope.isConcern = !$scope.isConcern;
+        })
+    }else{
+      //添加关注
+      $http({
+        method:'POST',
+        url: appInfo.apiUrl + '/concern/create',
+        data:{ customer_id:customer_id, house_id:house_id },
+        headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}
+      })
+        .success(function(response){
+          //console.log(response);
+          //$window.location.reload(true);
+          $scope.isConcern = !$scope.isConcern;
+        })
+    }
+  }
+
+
+  //获取优惠，跳转到获取优惠页面，传参数
+  $scope.getDiscount = function(){
+
+    $state.go('getDiscount', {customer_id:customer_id,house_id:house_id});
+
+  }
+
+
 	$scope.onSwipeUp = function(){
 		$state.go('houseTab.ybj', { house_id: house_id });
 	}
 
 })
+
+
+
+.controller('getDiscountCtrl', function($scope, $rootScope, $state, $stateParams, $ionicSlideBoxDelegate,$http, appInfo, Slider, House, AuthService) {
+
+    $scope.hhhh = function(){
+      console.log('dddddd');
+    }
+
+    //console.log($stateParams);
+    //console.log($stateParams.customer_id);
+    //console.log($stateParams.house_id);
+
+    $scope.verifyBtn = true;
+    $scope.submitBtn = true;
+    $scope.showVerifyCode = true;
+    $scope.modifyCustomerTelephone = false;
+    $scope.verifyBtnText = '验证';
+
+    $scope.reservation = {};
+
+    if($stateParams.customer_id){
+      $http.get(appInfo.apiUrl + '/house/discount?customer_id=' + parseInt($stateParams.customer_id) +'&house_id=' + parseInt($stateParams.house_id))
+        .success(function(response){
+          console.log(response);
+          $scope.house_discount = response.data;
+          $scope.reservation.customer_telephone = response.data.customer_telephone;
+
+        })
+    }else{
+      $scope.showVerifyCode = false;
+    }
+
+
+    $scope.modifyTel = function(){
+      $scope.showVerifyCode = false;
+      $scope.modifyCustomerTelephone = true;
+    }
+
+    $scope.$watch('reservation.customer_telephone',function(){
+      if(!angular.isUndefined($scope.reservation.customer_telephone)){
+        $scope.verifyBtn = false;
+      }else{
+        $scope.verifyBtn = true;
+      }
+    });
+
+
+    //获取验证码
+    $scope.getVerifyCode = function(customer_telephone){
+      console.log(customer_telephone);
+
+      $http.get('http://app.tigonetwork.com/api/customer/getverifycode?customer_telephone=' + customer_telephone + '&customer_id=' + c_id)
+        .success(function(response){
+          console.log(response.data);
+          $scope.submitBtn = false;
+          if(response.status){
+            $scope.verifyBtn = true;
+            $scope.verifyBtnText = 60;
+            $rootScope.verifyCode = response.data.code;
+
+            var timer = $interval(function () {
+              $scope.verifyBtnText --;
+            }, 1000);
+
+            $scope.$watch('verifyBtnText',function(){
+              if($scope.verifyBtnText == 0 || $scope.verifyBtnText<0){
+                $interval.cancel(timer);
+                $scope.verifyBtn = false;
+                $scope.verifyBtnText = '验证';
+              }
+            })
+          }
+        })
+    }
+
+
+    //添加预约
+    $scope.createReservation = function(){
+      if($stateParams.customer_id){
+        $http({
+          method:'POST',
+          url: appInfo.apiUrl + '/reservation/create',
+          data:{ customer_id:parseInt($stateParams.customer_id), house_id:parseInt($stateParams.house_id), reservation_telephone:$scope.reservation.customer_telephone,customer_code:$scope.reservation.code },
+          headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}
+        })
+          .success(function(response){
+            console.log(response);
+            //$window.location.reload(true);
+            //$state.go('tab.concern', {reload:true});
+          })
+      }else{
+        $state.go('login');
+      }
+    }
+
+})
+
+
+
+
+
+
+
+
+
+
 
 
 /** 楼盘详情页面controller **/
@@ -772,8 +927,9 @@ angular.module('starter.controllers', [])
 
 
 
+
 .controller('carCtrl', function($scope, AuthService) {
-    $scope.customer_id = AuthService.get_Customer_id();
+
 })
 
 

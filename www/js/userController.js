@@ -1,4 +1,4 @@
-angular.module('userController', [])
+angular.module('userController', ['ngCordova'])
 
 	.directive('groupedRadio', function() {
 		return {
@@ -183,7 +183,7 @@ angular.module('userController', [])
 		//var c_id = 1;
 
     $scope.customer_id = AuthService.get_Customer_id();
-    console.log($scope.customer_id);
+    //console.log($scope.customer_id);
 
 		$http.get('http://app.tigonetwork.com/api/customer/getMemberInfo?customer_id=' + parseInt($scope.customer_id))
 			.success(function(response){
@@ -203,8 +203,8 @@ angular.module('userController', [])
 			if(customer_birthday != undefined){
 				$http({
 					method:'POST',
-					url: appInfo.customerApi + '/updateCustomerInfo?customer_id=' + c_id,
-					data:{customer_id:c_id,customer_birthday:birthday},
+					url: appInfo.customerApi + '/updateCustomerInfo?customer_id=' + $scope.customer_id,
+					data:{customer_id:$scope.customer_id,customer_birthday:birthday},
 					headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}
 				})
 					.success(function(response){
@@ -224,12 +224,12 @@ angular.module('userController', [])
 		$scope.selectHy = function(selectedHy){
 			//console.log(selectedHy);
 			$scope.hyName = selectedHy;
-			var c_id = 1;
+			//var c_id = 1;
 
 			$http({
 				method:'POST',
-				url: appInfo.customerApi + '/updateCustomerInfo?customer_id=' + c_id,
-				data:{customer_id:c_id, customer_industry:selectedHy},
+				url: appInfo.customerApi + '/updateCustomerInfo?customer_id=' + $scope.customer_id,
+				data:{customer_id:$scope.customer_id, customer_industry:selectedHy},
 				headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}
 			})
 				.success(function(response){
@@ -373,13 +373,15 @@ angular.module('userController', [])
 	})
 
 
-	.controller('updateMemberInfoCtrl', function($scope, $http, appInfo, $state, $location, $window){
-		var c_id = 1;
+	.controller('updateMemberInfoCtrl', function($scope, $http, appInfo, $state, $location, $ionicPlatform, $cordovaCamera, $ionicModal, $jrCrop, $cordovaFileTransfer, $window,AuthService){
+		//var c_id = 1;
+    $scope.customer_id = AuthService.get_Customer_id();
+
 		$scope.modifyNickName = function(customer_nickname){
 			$http({
 				method:'POST',
-				url: appInfo.customerApi + '/updateCustomerInfo?customer_id=' + c_id,
-				data:{customer_id:c_id,customer_nickname:customer_nickname},
+				url: appInfo.customerApi + '/updateCustomerInfo?customer_id=' +  $scope.customer_id,
+				data:{customer_id: $scope.customer_id,customer_nickname:customer_nickname},
 				headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}
 			})
 				.success(function(response){
@@ -394,8 +396,8 @@ angular.module('userController', [])
 			console.log(customer_gender);
 			$http({
 				method:'POST',
-				url: appInfo.customerApi + '/updateCustomerInfo?customer_id=' + c_id,
-				data:{customer_id:c_id,customer_gender:customer_gender},
+				url: appInfo.customerApi + '/updateCustomerInfo?customer_id=' + $scope.customer_id,
+				data:{customer_id:$scope.customer_id,customer_gender:customer_gender},
 				headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}
 			})
 				.success(function(response){
@@ -410,8 +412,8 @@ angular.module('userController', [])
 		$scope.modifyDescription = function(customer_description){
 			$http({
 				method:'POST',
-				url: appInfo.customerApi + '/updateCustomerInfo?customer_id=' + c_id,
-				data:{customer_id:c_id,customer_description:customer_description},
+				url: appInfo.customerApi + '/updateCustomerInfo?customer_id=' + $scope.customer_id,
+				data:{customer_id:$scope.customer_id,customer_description:customer_description},
 				headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}
 			})
 				.success(function(response){
@@ -426,8 +428,8 @@ angular.module('userController', [])
 		$scope.modifyCompanyJob = function(customer_company, customer_job){
 			$http({
 				method:'POST',
-				url: appInfo.customerApi + '/updateCustomerInfo?customer_id=' + c_id,
-				data:{customer_id:c_id,customer_company:customer_company, customer_job:customer_job},
+				url: appInfo.customerApi + '/updateCustomerInfo?customer_id=' + $scope.customer_id,
+				data:{customer_id:$scope.customer_id,customer_company:customer_company, customer_job:customer_job},
 				headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}
 			})
 				.success(function(response){
@@ -439,12 +441,77 @@ angular.module('userController', [])
 				})
 		}
 
+
+    //修改并上传头像
+    $ionicPlatform.ready(function() {
+      $scope.modifyTx = function () {
+        var options = {
+          destinationType: Camera.DestinationType.FILE_URI,
+          sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+
+          // allowEdit:true,
+          popoverOptions: CameraPopoverOptions
+        };
+
+        $cordovaCamera.getPicture(options).then(function (imageURI) {
+          //var image = document.getElementById('myImage');
+          //image.src = imageURI;
+          //$scope.imageUrl = imageURI;
+          $scope.crop(imageURI);
+        }, function (err) {
+          // error
+        });
+      }
+
+
+      $scope.crop = function (image) {
+        $jrCrop.crop({
+          url: image,
+          width: 200,
+          height: 200,
+          title: '',
+          cancelText: '取消',
+          chooseText: '裁剪'
+        }).then(function (canvas) {
+
+          // console.log(canvas);
+          // console.log(canvas.toDataURL());
+
+          //以DataURL形式上传，以下代码（一行）是可行的，可以成功上传到服务器，但是图片文件非常大。
+          // $scope.testFileUpload(canvas.toDataURL());
+
+          canvas.toBlob(function (image) {
+
+            var formData = new FormData();
+            formData.append('image', image);
+            formData.append('customer_id', $scope.customer_id);
+
+            $http({
+              url: 'http://app.tigonetwork.com/api/customer/update_customer_avatar',
+              method: 'post',
+              headers: {
+                'Content-Type': undefined
+              },
+              data: formData
+            }).then(function (response) {
+              //console.log(response);
+              $window.location.reload(true);
+            });
+          }, "image/jpeg", 0.95);
+
+        });
+      };
+
+    });
+
 	})
 
 
 
-	.controller('verifyTelephoneCtrl', function($scope,$rootScope,$state,$http,appInfo,$timeout,$interval,$window,$location){
-		var c_id=1;
+	.controller('verifyTelephoneCtrl', function($scope,$rootScope,$state,$http,appInfo,$timeout, $ionicPlatform, $http, $ionicModal,$interval,$window,$location,AuthService){
+		//var c_id=1;
+    $scope.customer_id = AuthService.get_Customer_id();
+
 		$scope.verifyBtn = true;
 		$scope.submitBtn = true;
 		$scope.verifyBtnText = '验证';
@@ -460,7 +527,7 @@ angular.module('userController', [])
 		$scope.getVerifyCode = function(customer_telephone){
 			console.log(customer_telephone);
 
-			$http.get('http://app.tigonetwork.com/api/customer/getverifycode?customer_telephone=' + customer_telephone + '&customer_id=' + c_id)
+			$http.get('http://app.tigonetwork.com/api/customer/getverifycode?customer_telephone=' + customer_telephone + '&customer_id=' + $scope.customer_id)
 				.success(function(response){
 					console.log(response.data);
 					$scope.submitBtn = false;
@@ -491,8 +558,8 @@ angular.module('userController', [])
 				console.log('ok');
 				$http({
 					method:'POST',
-					url: appInfo.customerApi + '/updateCustomerInfo?customer_id=' + c_id,
-					data:{customer_id:c_id,customer_telephone:customer_telephone, code:$scope.code},
+					url: appInfo.customerApi + '/updateCustomerInfo?customer_id=' + $scope.customer_id,
+					data:{customer_id:$scope.customer_id,customer_telephone:customer_telephone, code:$scope.code},
 					headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}
 				})
 					.success(function(response){
@@ -504,6 +571,10 @@ angular.module('userController', [])
 					})
 			}
 		}
+
+
+
+
 
 	})
 

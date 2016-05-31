@@ -90,7 +90,7 @@ angular.module('starter.services', ['ngResource'])
           headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}
         })
           .success(function(response){
-            //console.log(response);
+            console.log(response);
             customer_id = response.data.customer_id;
             console.log(customer_id);
             storeUserCredentials(customer_id);
