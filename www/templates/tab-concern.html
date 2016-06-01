@@ -71,7 +71,7 @@
         <span ng-show="!reservation.agent_id" class="item-note jdr">
           正在为您安排接待人
         </span>
-        <button class="button icon button-clear ion-ios-chatbubble msg" ng-show="reservation.agent_id" style="position:absolute;padding:0;margin:0; min-width:20px;"></button>
+        <button class="button icon button-clear ion-ios-chatbubble msg" ng-click="startChat(2)" ng-show="reservation.agent_id" style="position:absolute;padding:0;margin:0; min-width:20px;"></button>
       </div>
 
       <div class="item" style="text-align: right;">

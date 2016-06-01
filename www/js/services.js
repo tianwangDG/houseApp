@@ -81,8 +81,11 @@ angular.module('starter.services', ['ngResource'])
     //};
 
     var login = function(phone, code, openid){
+      console.log(phone);
+      console.log(code);
+      console.log(openid);
       return $q(function(resolve, reject) {
-        var customer_openid = 123456789;
+        var customer_openid = '1234dd56789';
         $http({
           method:'POST',
           url: appInfo.customerApi + '/login',

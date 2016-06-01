@@ -6,6 +6,14 @@ angular.module('starter.controllers', [])
     $state.go('login');
   }
 
+  $scope.goToGuide = function(){
+    $state.go('guide');
+  }
+
+  $scope.goToAbout = function(){
+    $state.go('about');
+  }
+
   //$scope.$on("$ionicView.enter", function(){
   //  $scope.customer_id = AuthService.get_Customer_id();
   //})
@@ -487,11 +495,7 @@ angular.module('starter.controllers', [])
 
 
 
-.controller('getDiscountCtrl', function($scope, $rootScope, $state, $stateParams, $ionicSlideBoxDelegate,$http, appInfo, Slider, House, AuthService) {
-
-    $scope.hhhh = function(){
-      console.log('dddddd');
-    }
+.controller('getDiscountCtrl', function($scope, $rootScope, $state, $stateParams, $interval, $ionicPopup, $ionicSlideBoxDelegate,$http, appInfo, Slider, House, AuthService) {
 
     //console.log($stateParams);
     //console.log($stateParams.customer_id);
@@ -534,9 +538,8 @@ angular.module('starter.controllers', [])
 
     //获取验证码
     $scope.getVerifyCode = function(customer_telephone){
-      console.log(customer_telephone);
 
-      $http.get('http://app.tigonetwork.com/api/customer/getverifycode?customer_telephone=' + customer_telephone + '&customer_id=' + c_id)
+      $http.get('http://app.tigonetwork.com/api/customer/getverifycode?customer_telephone=' + customer_telephone + '&customer_id=' + parseInt($stateParams.customer_id))
         .success(function(response){
           console.log(response.data);
           $scope.submitBtn = false;
@@ -573,7 +576,19 @@ angular.module('starter.controllers', [])
           .success(function(response){
             console.log(response);
             //$window.location.reload(true);
-            //$state.go('tab.concern', {reload:true});
+            if(response.status){
+              $state.go('tab.concern', {reload:true});
+            }else{
+              //如果重复预约，弹出提示框
+              var alertPopup = $ionicPopup.alert({
+                title: '提示',
+                template: '您已预约此楼盘，无需重复预约！'
+              });
+
+              alertPopup.then(function(res) {
+                $state.go('tab.concern', {reload:true});
+              });
+            }
           })
       }else{
         $state.go('login');
@@ -613,8 +628,12 @@ angular.module('starter.controllers', [])
 
 
 .controller('houseYbjCtrl', function($scope,$rootScope,$stateParams,HouseDetail,$ionicSlideBoxDelegate,$state){
+
+
 	//console.log($stateParams.id);
 	var house_id = parseInt($stateParams.house_id);
+
+
 	if(house_id){
 		$scope.house_id = house_id;
 		$rootScope.id = house_id;
@@ -909,7 +928,7 @@ angular.module('starter.controllers', [])
 .controller('guideCtrl', function($scope, $http, appInfo){
     $http.get(appInfo.commonApi + '/guide')
       .success(function(data){
-        console.log(data);
+        //console.log(data);
         if(data.data.length > 0){
           $scope.content = data.data;
         }else{
@@ -933,77 +952,3 @@ angular.module('starter.controllers', [])
 })
 
 
-
-.controller('messageCtrl', function($location,$scope,$rootScope,$http) {
-    var c_id = 1;
-
-    $http.get('http://app.tigonetwork.com/api/customer/getMemberInfo?customer_id=' + c_id)
-      .success(function(response){
-        console.log(response.data);
-        $rootScope.userData = response.data;
-
-        $scope.values =[];  //记录当前会话
-        $scope.message = "";  //初始化对话记录
-        ///var hasharr = $location.hash().split("&");
-        sessionStorage.setItem("localTime",Date.now());
-
-        var sender = response.data.customer_id; //document.getElementsByTagName("input").username.value;  //发送者ID（名字）
-        var dialogue = response.data.dialogue;
-        console.log(sender);
-        console.log(dialogue);
-
-        //提交按钮事件
-        $scope.send = function(){
-          var myDate = new Date();
-          var	showTime = myDate.getFullYear()+"-"+(myDate.getMonth()+1)+"-"+myDate.getDate()+"&nbsp;"+(myDate.getHours()<10 ? "0"+myDate.getHours() : myDate.getHours())+":"+(myDate.getMinutes()<10 ? "0"+myDate.getMinutes():myDate.getMinutes())+":"+(myDate.getSeconds()<10 ? "0"+myDate.getSeconds():myDate.getSeconds());
-          //console.log(showTime);
-          var aref = new Wilddog("https://qiyoon.wilddogio.com/dialogue/"+dialogue);
-          var val=$scope.content;
-          var sarr = [];
-          sarr[sender] = {"value":val,"username":sender,"time":Date.now(),"showtime":showTime};
-          aref.push(sarr);
-          $scope.content = "";
-        }
-
-        var ref = new Wilddog("https://qiyoon.wilddogio.com/dialogue/"+dialogue);
-
-        ref.on('value',loadData);
-        function loadData(pshot) {
-            var newarr = [];
-            var data,fasong = "",jieshou="";
-            pshot.forEach(function(snap){
-              data = snap.val();
-              for(var n in data){
-                if(sessionStorage.getItem("localTime")>data[n].time)
-                  continue;
-                if(n==sender)
-                  data[n].type = 1
-                else
-                  data[n].type = 0
-
-                //格式化时间戳
-                /*var d = Math.ceil((Date.now() - data[n].time)/1000);
-                 if( d/60 <= 60){
-                 data[n].showtime = Math.ceil(d/60)+"分钟前"
-                 }else if(d/60 > 60 && d/60 < 24*60){
-                 data[n].showtime = Math.ceil(d/3600)+"小时前"
-                 }else if(d/60 > 24*60) {
-                 data[n].showtime = Math.ceil(d/(3600*24))+"天前"
-                 }*/
-                newarr.push(data[n]);
-              }
-            });
-            $scope.message = newarr;
-            console.log($scope.message);
-            var html="";
-            angular.forEach(newarr,function(v,k){
-              html+='<li>'+v.username+'：'+v.value+'&nbsp;&nbsp;'+v.showtime+'</li>'
-            })
-            document.getElementById("message").innerHTML = html;
-            //$scope.message = $scope.message1.concat($scope.message2);
-            //console.log($scope.message=pshot.val())
-        }
-      })
-
-
-  });

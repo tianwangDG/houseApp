@@ -15,17 +15,17 @@
 
       <p style="font-family: '华文细黑';font-size:4vw;line-height:2em;color:#fff;margin:1vh 4vw;padding: .2em .6em;border:1px dashed #fff;border-radius: .3em;" ng-show="house_discount.house_discount_description">{{house_discount.house_discount_description}}</p>
 
-      <div class="padding hqyh">
+      <div class="padding hqyh" >
         <label class="item-input item-stacked-label">
           <span class="input-label" style="color:#555;">电话：</span>
           <input type="tel" ng-change="modifyTel()" ng-pattern="/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/" ng-minlength="11" ng-maxlength="11" ng-required="true" placeholder="请输入电话号码" ng-model="reservation.customer_telephone" style="background: none;border-bottom: 1px solid rgba(256,256,256,.5);">
-          <button  ng-click="getVerifyCode(reservation.customer_telephone)" ng-show="!showVerifyCode" class="button button-energized" style="position:absolute;top:1em;right:0;min-height:30px;font-size: 1em;font-family: '华文细黑';padding: 0 .4em;color:#000;" ng-disabled="verifyBtn">{{verifyBtnText}}</button>
+          <button data-tap-disabled="true"  ng-click="getVerifyCode(reservation.customer_telephone)" ng-show="!showVerifyCode" class="button button-energized" style="position:absolute;top:1em;right:0;min-height:30px;font-size: 1em;font-family: '华文细黑';padding: 0 .4em;color:#000;" ng-disabled="verifyBtn">{{verifyBtnText}}</button>
         </label>
         <label class="item-input item-stacked-label" ng-if="!showVerifyCode">
           <span class="input-label" style="color:#555;">验证码：</span>
           <input type="text" ng-model="reservation.code" placeholder="请输入验证码" style="background: none;border-bottom: 1px solid rgba(256,256,256,.5)">
         </label>
-        <button class="button button-full button-energized" ng-click="createReservation()" style="color:#000;font-family: '华文细黑';" ng-disabled="!reservation.customer_telephone || modifyCustomerTelephone">确定</button>
+        <button class="button button-full button-energized" ng-click="createReservation()" style="color:#000;font-family: '华文细黑';" ng-disabled="(reservation.customer_telephone == parseInt($scope.house_discount.customer_telephone))" >确定</button>
       </div>
 
 

@@ -23,6 +23,67 @@ angular.module('concernController', [])
     }
 
 
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+
+    //开始对话
+    $scope.startChat = function(receive_id){
+      //记录开始对话的时间
+      if(!sessionStorage.getItem("localTime")){
+        sessionStorage.setItem("localTime",Date.now());
+      }
+      //var sender = "bin" //localStorage.getItem("customer_id");  //当前登陆用户，即发送消息者
+      //var receive = "liubin"//receive_id;
+      var sender = localStorage.getItem("customer_id");  //当前登陆用户，即发送消息者
+      var receive = receive_id;
+
+
+      $http.get("/dialogue.json").success(function(data){
+        dialogue = false;
+        angular.forEach(data,function(x,y){
+          if(x.chatName == sender+"_"+receive){
+            dialogue = "dialogue/" + x.chatName;
+            return true;
+          }else if (x.chatName == receive +"_"+sender) {
+            dialogue = "dialogue/" + x.chatName;
+            return true;
+          }
+          if(!dialogue){
+            dialogue = false;
+          }
+        });
+        //如果dialogue不为假，则可以开始对话;否则新创建对话室
+        if(false!==dialogue){
+          sessionStorage.setItem("dialogue",dialogue);
+          $state.go("tab.message",{});
+        }else{
+          console.log("创建对话")
+        }
+      })
+
+      if(!sender){
+        //$state.go();
+        /*if(lg=prompt("请先登陆！")){
+         sessionStorage.setItem("senderId",lg);
+         sender = lg;
+         }*/
+      }
+    }
+
+
+
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
     //切换已关注
     $scope.toConcern = function(tabName){
       $scope.active_content = tabName;

@@ -1,11 +1,27 @@
+
+<style type="text/css" media="screen">
+  .send-message{
+    position:fixed;
+    bottom: 50px;
+    left: 1px;
+    border-left:none;
+    border-right: none;
+    width: 100%;
+  }
+</style>
 <ion-view view-title="消息">
   <div class="bar bar-header">
     <div class="h1 title" style="font-family: '华文细黑';color:#000;">消息</div>
   </div>
   <ion-content class="has-header padding">
-
-
-    <div class="item item-input-inset" >
+ <div>
+      <ul id="message" ><!--
+        <li ng-repeat="x in message" ng-style="x.textAlign">{{x.value}}</li> -->
+      </ul>
+    </div>
+  </ion-content>
+   <form>
+    <div class="item item-input-inset send-message" >
       <label class="item-input-wrapper">
         <input type="text" name="content" placeholder="说点什么吧……" ng-model="content">
       </label>
@@ -13,10 +29,6 @@
         发送
       </button>
     </div>
-
-    <div>
-      <ul id="message"></ul>
-    </div>
-
-  </ion-content>
+  </form>
 </ion-view>
+

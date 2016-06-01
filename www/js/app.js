@@ -1,4 +1,4 @@
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'userController', 'calculator', 'concernController', 'ngCordova','ion-datetime-picker','jrCrop'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'userController', 'calculator', 'concernController','messageController', 'ngCordova','ion-datetime-picker','jrCrop'])
 
 .run(function($ionicPlatform,$rootScope,$state,$ionicHistory) {
   $ionicPlatform.ready(function() {
@@ -152,7 +152,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   .state('tab.guide', {
       url: '/guide',
       views: {
-        'tab-index': {
+        'tab-car': {
           templateUrl: 'templates/tab-guide.html',
           controller: 'guideCtrl'
         }
@@ -280,8 +280,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         controller: 'pkCtrl'
       })
 
+      //.state('getDiscount',{
+      //  url:'/getDiscount?customer_id?house_id',
+      //  templateUrl: 'templates/getDiscount.html',
+      //  controller:'getDiscountCtrl',
+      //  data:{
+      //    customer_id: USER.customer_id
+      //  }
+      //})
+
       .state('getDiscount',{
-        url:'/getDiscount?customer_id?house_id',
+        url:'/getDiscount/:customer_id/:house_id',
         templateUrl: 'templates/getDiscount.html',
         controller:'getDiscountCtrl',
         data:{

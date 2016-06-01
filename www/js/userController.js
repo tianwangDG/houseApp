@@ -36,7 +36,7 @@ angular.module('userController', ['ngCordova'])
 		//var customer_openid = 'df5sdfsd5fds6f5ds6fsd8erwhrt9ghrtyt8ryrty';
 
 		$scope.$watch('customer.customer_telephone',function(){
-			console.log($scope.customer.customer_telephone);
+			//console.log($scope.customer.customer_telephone);
 			if(!angular.isUndefined($scope.customer.customer_telephone)){
 				$scope.verifyBtn = false;
 			}else{
@@ -44,7 +44,8 @@ angular.module('userController', ['ngCordova'])
 			}
 		});
 
-		var customer_openid = "123456789";
+		var customer_openid = "1234dd56789";
+		//var customer_openid = "123456789";
 
 		function checkWxLogin(customer_openid,customer_thumb_url){
 			var customer_thumb_url = customer_thumb_url ? customer_thumb_url : '';
@@ -66,7 +67,7 @@ angular.module('userController', ['ngCordova'])
 					console.log(response.data.customer_telephone);
 				}else{
 					console.log("未绑定微信或电话");
-					//$scope.getVerifyCode($scope.customer_telephone);
+					$scope.getVerifyCode($scope.customer_telephone);
 				}
 			})
 
@@ -121,9 +122,9 @@ angular.module('userController', ['ngCordova'])
     //////////////////
 
 
-    $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
-        $scope.from = fromState.name;
-    });
+    //$scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+    //    $scope.from = fromState.name;
+    //});
 
 
     $scope.$on("$ionicView.enter", function(){
@@ -134,8 +135,8 @@ angular.module('userController', ['ngCordova'])
     $scope.login = function(customer) {
       AuthService.login(customer.customer_telephone, customer.code, customer_openid).then(function(authenticated) {
 
-        //$state.go('memberInfo', {}, { reload: true });
-        $state.go($scope.from, {}, { reload: true });
+        $state.go('tab.index', {}, { reload: true });
+        //$state.go($scope.from, {}, { reload: true });
 
       }, function(err) {
         var alertPopup = $ionicPopup.alert({
