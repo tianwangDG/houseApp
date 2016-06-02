@@ -28,11 +28,13 @@ angular.module('userController', ['ngCordova'])
 
 
 
-	.controller('loginCtrl', function($scope,$rootScope,$interval, $state,$http,appInfo,$ionicPopup, AuthService, $ionicHistory){
+	.controller('loginCtrl', function($scope,$rootScope,$interval, $state,$http,appInfo,$ionicPopup, AuthService,WECHAT, $ionicHistory){
 		$scope.customer = {};
 		$scope.verifyBtn = true;
 		$scope.submitBtn = true;
 		$scope.verifyBtnText = '验证';
+    //$scope.isBindedWx = true;
+    $scope.isBindedWx = false;
 		//var customer_openid = 'df5sdfsd5fds6f5ds6fsd8erwhrt9ghrtyt8ryrty';
 
 		$scope.$watch('customer.customer_telephone',function(){
@@ -44,36 +46,90 @@ angular.module('userController', ['ngCordova'])
 			}
 		});
 
-		var customer_openid = "1234dd56789";
+
+
+    function checkWxLogin(customer_openid){
+      //var customer_thumb_url = customer_thumb_url ? customer_thumb_url : '';
+      //return $http.get('http://app.tigonetwork.com/api/customer/checkWxLogin?customer_openid=' + customer_openid + '&customer_thumb_url=' + customer_thumb_url)
+      return $http.get(appInfo.customerApi + '/checkWxLogin?customer_openid=' + customer_openid )
+        .success(function(response) {
+          return response.data;
+        })
+        .error(function(response){
+          return response.status;
+        })
+    }
+
+		//var customer_openid = "1234dd56789";
 		//var customer_openid = "123456789";
 
-		function checkWxLogin(customer_openid,customer_thumb_url){
-			var customer_thumb_url = customer_thumb_url ? customer_thumb_url : '';
-			return $http.get('http://app.tigonetwork.com/api/customer/checkWxLogin?customer_openid=' + customer_openid + '&customer_thumb_url=' + customer_thumb_url)
-				.success(function(response) {
-					return response.data;
-				})
-				.error(function(response){
-					return response.status;
-				})
-		}
+    //Wechat.isInstalled(function (installed) {
+    //  alert("Wechat installed: " + (installed ? "Yes" : "No"));
+    //}, function (reason) {
+    //  alert("Failed: " + reason);
+    //});
+
+    $scope.wechatAuth = function(){
+      var scope = "snsapi_userinfo",
+        state = "_" + (+new Date());
+      Wechat.auth(scope, state, function (response) {
+         //alert(JSON.stringify(response));
+        //$scope.response = JSON.stringify(response);
+
+        $http.get('https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + WECHAT.AppID + '&secret=' + WECHAT.AppSecret + '&code=' + response.code + '&grant_type=authorization_code')
+          .success(function(res){
+            $scope.UnionID = res;
+
+            //获取用户openid
+            alert(res.openid);
+
+            $scope.customer_openid = res.openid;
+
+            var customer_openid = res.openid;
+            checkWxLogin(customer_openid)
+              .success(function(response){
+                if(response.status && response.data.customer_telephone){
+                  //
+                  //alert(response);
+                  alert(response.data.customer_id);
+                  //alert(response.data.customer_telephone);
+
+                  AuthService.checkedWxStoreCustomerId(response.data.customer_id).then(function(){
+                    $state.go('tab.index', {}, { reload: true });
+                  }, function(){
+                    var alertPopup = $ionicPopup.alert({
+                      title: '登录失败',
+                      template: '验证信息不正确!'
+                    });
+                  });
 
 
-		checkWxLogin(customer_openid)
-			.success(function(response){
-				if(response.status && response.data.customer_telephone){
-					//console.log(response);
-					console.log(response.data.customer_openid);
-					console.log(response.data.customer_telephone);
-				}else{
-					console.log("未绑定微信或电话");
-					$scope.getVerifyCode($scope.customer_telephone);
-				}
-			})
+                }else{
+                  alert("未绑定微信或电话");
+                  $scope.isBindedWx = true;
+                  //$scope.getVerifyCode($scope.customer_telephone);
+                }
+              })
+          })
+          .error(function(res){
+            alert('微信授权不成功!');
+            console.log('微信授权不成功!');
+          })
+      }, function (reason) {
+        //alert("Failed: " + reason);
+        alert("微信授权不成功");
+      });
+    }
+
+
+
+
+
+
 
 
 		$scope.getVerifyCode = function(customer_telephone){
-			$http.get('http://app.tigonetwork.com/api/customer/getverifycode?customer_telephone=' + customer_telephone + '&customer_openid=' + customer_openid)
+			$http.get(appInfo.customerApi + '/getverifycode?customer_telephone=' + customer_telephone + '&customer_openid=' + $scope.customer_openid)
 				.success(function(response){
 					console.log(response.data);
 					$scope.submitBtn = false;
@@ -133,7 +189,7 @@ angular.module('userController', ['ngCordova'])
     $scope.loginData = {};
 
     $scope.login = function(customer) {
-      AuthService.login(customer.customer_telephone, customer.code, customer_openid).then(function(authenticated) {
+      AuthService.login(customer.customer_telephone, customer.code, $scope.customer_openid).then(function(authenticated) {
 
         $state.go('tab.index', {}, { reload: true });
         //$state.go($scope.from, {}, { reload: true });
@@ -186,7 +242,7 @@ angular.module('userController', ['ngCordova'])
     $scope.customer_id = AuthService.get_Customer_id();
     //console.log($scope.customer_id);
 
-		$http.get('http://app.tigonetwork.com/api/customer/getMemberInfo?customer_id=' + parseInt($scope.customer_id))
+		$http.get(appInfo.customerApi + '/getMemberInfo?customer_id=' + parseInt($scope.customer_id))
 			.success(function(response){
 				//console.log(response.data);
 				$rootScope.userData = response.data;
@@ -472,7 +528,7 @@ angular.module('userController', ['ngCordova'])
           height: 200,
           title: '',
           cancelText: '取消',
-          chooseText: '裁剪'
+          chooseText: '确认'
         }).then(function (canvas) {
 
           // console.log(canvas);
@@ -488,7 +544,7 @@ angular.module('userController', ['ngCordova'])
             formData.append('customer_id', $scope.customer_id);
 
             $http({
-              url: 'http://app.tigonetwork.com/api/customer/update_customer_avatar',
+              url: appInfo.customerApi + '/update_customer_avatar',
               method: 'post',
               headers: {
                 'Content-Type': undefined
@@ -528,7 +584,7 @@ angular.module('userController', ['ngCordova'])
 		$scope.getVerifyCode = function(customer_telephone){
 			console.log(customer_telephone);
 
-			$http.get('http://app.tigonetwork.com/api/customer/getverifycode?customer_telephone=' + customer_telephone + '&customer_id=' + $scope.customer_id)
+			$http.get(appInfo.customerApi + '/getverifycode?customer_telephone=' + customer_telephone + '&customer_id=' + $scope.customer_id)
 				.success(function(response){
 					console.log(response.data);
 					$scope.submitBtn = false;
@@ -585,31 +641,106 @@ angular.module('userController', ['ngCordova'])
 
 
 
-	.controller('memberRecommendCtrl', function($scope, $state, $ionicModal){
+	.controller('memberRecommendCtrl', function($scope, $state, $ionicModal, $ionicActionSheet, $ionicPopup){
 		$scope.goBackIndex = function () {
 			$state.go('tab.index');
 		}
 
-		$ionicModal.fromTemplateUrl('share.html', {
-			scope: $scope,
-			animation: 'slide-in-up'
-		}).then(function(modal) {
-			$scope.shareModal = modal;
-		})
-		$scope.openShareModal = function() {
-			$scope.shareModal.show();
-		}
-		$scope.closeShareModal = function() {
-			return $scope.shareModal.hide();
-		};
-		$scope.$on('$destroy', function() {
-			$scope.shareModal.remove();
-		});
+
+    $scope.shareTo = function(){
+      var share = $ionicActionSheet.show({
+        buttons: [
+          { text: '<i class="icon ion-chatbubbles assertive"></i> 分享给微信好友' },
+          { text: '<i class="icon ion-aperture assertive"></i> 分享到微信朋友圈' },
+          { text: '<i class="icon ion-qr-scanner assertive"></i> 二维码' }
+        ],
+        titleText: '推荐分享',
+        cancelText: '取消',
+        cancel: function() {
+          // add cancel code..
+        },
+        buttonClicked: function(index) {
+          if(index == 0){
+            Wechat.share({
+              message: {
+                title: "团居网房产中介平台",
+                description: "团居网房产中介平台",
+                thumb: "http://app.tigonetwork.com/public/img/shareLogo.jpg",
+                mediaTagName: "TEST-TAG-001",
+                messageExt: "这是第三方带的测试字段",
+                messageAction: "<action>dotalist</action>",
+                media: {
+                  type: Wechat.Type.WEBPAGE,
+                  webpageUrl: "http://www.tigonetwork.com/"
+                }
+              },
+              scene: Wechat.Scene.SESSION
+            }, function () {
+              alert("分享成功");
+            }, function (reason) {
+              alert("分享失败: " + reason);
+            });
+          }else if(index == 1){
+            Wechat.share({
+              message: {
+                title: "团居网房产中介平台",
+                description: "团居网房产中介平台",
+                thumb: "http://app.tigonetwork.com/public/img/shareLogo.jpg",
+                mediaTagName: "TEST-TAG-001",
+                messageExt: "这是第三方带的测试字段",
+                messageAction: "<action>dotalist</action>",
+                media: {
+                  type: Wechat.Type.WEBPAGE,
+                  webpageUrl: "http://www.tigonetwork.com/"
+                }
+              },
+              scene: Wechat.Scene.TIMELINE
+            }, function () {
+              alert("分享成功");
+            }, function (reason) {
+              alert("分享失败: " + reason);
+            });
+          }else if(index == 2){
+            var alertPopup = $ionicPopup.alert({
+              title: '扫描二维码关注公众号',
+              buttons:[{text:'确定', type: 'button-positive'}],
+              template: '<img src="img/code.jpg" style="width:100%;display:block;margin:0 auto;text-align: center;" />'
+            });
+
+            alertPopup.then(function(res) {
+
+            });
+          }else{
+            return true;
+          }
+        }
+      });
+    }
+
+
+
+
+
+
+		//$ionicModal.fromTemplateUrl('share.html', {
+		//	scope: $scope,
+		//	animation: 'slide-in-up'
+		//}).then(function(modal) {
+		//	$scope.shareModal = modal;
+		//})
+		//$scope.openShareModal = function() {
+		//	$scope.shareModal.show();
+		//}
+		//$scope.closeShareModal = function() {
+		//	return $scope.shareModal.hide();
+		//};
+		//$scope.$on('$destroy', function() {
+		//	$scope.shareModal.remove();
+		//});
+
+
+
 	})
-
-
-
-
 
 
 

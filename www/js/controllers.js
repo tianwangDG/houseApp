@@ -1,6 +1,15 @@
 angular.module('starter.controllers', [])
 
 
+.run(function($ionicPlatform) {
+  $ionicPlatform.ready(function() {
+    setTimeout(function() {
+      navigator.splashscreen.hide();
+    }, 100);
+  });
+})
+
+
 .controller('AppCtrl', function($scope, $rootScope, $state, $ionicPopup, AuthService, AUTH_EVENTS) {
   $scope.goToLogin = function(){
     $state.go('login');
@@ -539,7 +548,7 @@ angular.module('starter.controllers', [])
     //获取验证码
     $scope.getVerifyCode = function(customer_telephone){
 
-      $http.get('http://app.tigonetwork.com/api/customer/getverifycode?customer_telephone=' + customer_telephone + '&customer_id=' + parseInt($stateParams.customer_id))
+      $http.get(appInfo.customerApi + '/getverifycode?customer_telephone=' + customer_telephone + '&customer_id=' + parseInt($stateParams.customer_id))
         .success(function(response){
           console.log(response.data);
           $scope.submitBtn = false;
@@ -645,6 +654,7 @@ angular.module('starter.controllers', [])
 	//console.log($rootScope.id);
 	$scope.house_featured = [];
 	HouseDetail.get({id:$scope.house_id}).$promise.then(function(response){
+    console.log(response.data);
 		$scope.lpInfo = response.data;
 		$ionicSlideBoxDelegate.update();
 

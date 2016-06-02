@@ -22,9 +22,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 })
 
 .constant('appInfo', {
-  commonApi:'http://app.tigonetwork.com/api/common',
-	apiUrl: 'http://app.tigonetwork.com/api',
-	customerApi: 'http://app.tigonetwork.com/api/customer'
+  commonApi:'http://app.anjia0769.com/api/common',
+	apiUrl: 'http://app.anjia0769.com/api',
+	customerApi: 'http://app.anjia0769.com/api/customer'
 })
 
 .constant('AUTH_EVENTS', {
@@ -34,6 +34,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
 .constant('USER', {
   customer_id: null
+})
+
+.constant('WECHAT', {
+  AppID: 'wx21c3a8614731575a',
+  AppSecret: '6f355c8534b456a7540f5fed89125e63'
 })
 
 
@@ -152,7 +157,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   .state('tab.guide', {
       url: '/guide',
       views: {
-        'tab-car': {
+        'tab-index': {
           templateUrl: 'templates/tab-guide.html',
           controller: 'guideCtrl'
         }

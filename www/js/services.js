@@ -80,12 +80,25 @@ angular.module('starter.services', ['ngResource'])
     //  });
     //};
 
+    //检查有微信openid后存储customer_id
+    var checkedWxStoreCustomerId = function(customer_id){
+      return $q(function(resolve, reject) {
+        if(customer_id){
+          storeUserCredentials(customer_id);
+          resolve('已有用户登录成功');
+        }else{
+          reject('已有用户登录失败');
+        }
+      });
+    };
+
+
     var login = function(phone, code, openid){
       console.log(phone);
       console.log(code);
       console.log(openid);
       return $q(function(resolve, reject) {
-        var customer_openid = '1234dd56789';
+        //var customer_openid = '1234dd56789';
         $http({
           method:'POST',
           url: appInfo.customerApi + '/login',
@@ -107,11 +120,6 @@ angular.module('starter.services', ['ngResource'])
     };
 
 
-
-
-
-
-
     var logout = function() {
       destroyUserCredentials();
     };
@@ -128,6 +136,7 @@ angular.module('starter.services', ['ngResource'])
     loadUserCredentials();
 
     return {
+      checkedWxStoreCustomerId:checkedWxStoreCustomerId,
       login: login,
       logout: logout,
       isAuthorized: isAuthorized,

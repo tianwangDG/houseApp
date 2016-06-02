@@ -1,4 +1,4 @@
-<ion-view hide-nav-bar="false" hide-back-button="true" view-title="楼盘">
+<ion-view hide-nav-bar="false" view-title="楼盘" cache-view="false" >
   <ion-side-menus>
     <ion-side-menu side="left" class="leftSide">
       <ion-content>
@@ -20,7 +20,7 @@
         </div>
 
 
-        <div class="list my">
+        <div class="list my" ng-controller="memberRecommendCtrl">
           <!--<a class="item item-icon-left item-icon-right" href="#/memberJcq">-->
           <!--<i class="icon ion-cash"></i>-->
           <!--我的叫车券-->
@@ -35,7 +35,8 @@
           <!--<i class="icon ion-ios-cart"></i>-->
           <!--积分商城-->
           <!--</a>-->
-          <a class="item item-icon-left" href="#/memberRecommend">
+          <!--<a class="item item-icon-left" href="#/memberRecommend">-->
+          <a class="item item-icon-left" ng-click="shareTo()">
             <i class="icon ion-person-stalker"></i>
             分享推荐
           </a>
@@ -76,24 +77,25 @@
     <ion-side-menu-content>
       <ion-content>
         <div class="headBar">
-          <div class="user" menu-toggle="left"><i class="icon ion-ios-person-outline"></i></div>
+          <div class="user" menu-toggle="left" style="width:1.6em;height:1.6em;margin-top: 0.6em;"><i class="icon ion-ios-person-outline" style="font-size: 1.6em;"></i></div>
           <h2 class="headBarZone">东莞</h2>
           <!--<i class="icon ion-ios-arrow-down" style="font-size: 1.1em;"></i>-->
           <div style="display: inline-block;">
             <label class="item-input-wrapper" style="background: rgba(255, 250, 250, 1);margin-left: .6em;width: 12em;">
               <input type="search" placeholder="请输入楼盘名" style="height:24px;color:#222;width: 200px;">
-              <i class="icon ion-ios-search placeholder-icon"></i>
+              <i class="icon ion-ios-search placeholder-icon" style="font-size: 1.8em;background: none !important;"></i>
             </label>
           </div>
         </div>
 
-        <ion-slide-box on-slide-changed="slideHasChanged($index)" auto-play="true" does-continue="true">
+        <ion-slide-box on-slide-changed="slideHasChanged($index)" ng-if="sliders.length" auto-play="true" does-continue="true">
           <ion-slide ng-repeat="slider in sliders">
             <a style="width:100%;text-decoration: none;color:#333;" href="#/tab/house/{{slider.house_id}}">
               <img ng-src="{{slider.house_slider_src}}" alt="{{slider.house_name}}"  />
             </a>
           </ion-slide>
         </ion-slide-box>
+
         <div class="row housetype padding">
           <div class="col" ng-click="filterHouseType(0)">
             <img src="img/housetype/s1.png" alt="housetype1" />

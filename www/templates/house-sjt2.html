@@ -7,7 +7,7 @@
   <ion-content class="has-header">
     <div class="has-header" style="background-color: #d1d1d1;width:100%;">
       <ion-slide-box auto-play="true" does-continue="true" class="customerSlider">
-        <ion-slide ng-repeat="ybj in lpInfo.sjt">
+        <ion-slide ng-repeat="ybj in lpInfo.sjt track by $index">
           <img ng-src="{{ybj}}" alt="lpInfo.house_name" />
         </ion-slide>
       </ion-slide-box>
