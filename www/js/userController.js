@@ -81,7 +81,7 @@ angular.module('userController', ['ngCordova'])
             $scope.UnionID = res;
 
             //获取用户openid
-            alert(res.openid);
+            //alert(res.openid);
 
             $scope.customer_openid = res.openid;
 
@@ -91,7 +91,7 @@ angular.module('userController', ['ngCordova'])
                 if(response.status && response.data.customer_telephone){
                   //
                   //alert(response);
-                  alert(response.data.customer_id);
+                  //alert(response.data.customer_id);
                   //alert(response.data.customer_telephone);
 
                   AuthService.checkedWxStoreCustomerId(response.data.customer_id).then(function(){
@@ -582,11 +582,11 @@ angular.module('userController', ['ngCordova'])
 		});
 
 		$scope.getVerifyCode = function(customer_telephone){
-			console.log(customer_telephone);
+			//console.log(customer_telephone);
 
 			$http.get(appInfo.customerApi + '/getverifycode?customer_telephone=' + customer_telephone + '&customer_id=' + $scope.customer_id)
 				.success(function(response){
-					console.log(response.data);
+					//console.log(response.data);
 					$scope.submitBtn = false;
 					if(response.status){
 						$scope.verifyBtn = true;

@@ -1,4 +1,4 @@
-<ion-view hide-nav-bar="false" view-title="楼盘" cache-view="false" >
+<ion-view hide-nav-bar="false" view-title="楼盘">
   <ion-side-menus>
     <ion-side-menu side="left" class="leftSide">
       <ion-content>
@@ -76,14 +76,30 @@
 
     <ion-side-menu-content>
       <ion-content>
-        <div class="headBar">
-          <div class="user" menu-toggle="left" style="width:1.6em;height:1.6em;margin-top: 0.6em;"><i class="icon ion-ios-person-outline" style="font-size: 1.6em;"></i></div>
-          <h2 class="headBarZone">东莞</h2>
+        <!--<div class="headBar">-->
+          <!--<div class="user" menu-toggle="left" style="width:1.6em;height:1.6em;margin-top: 0.6em;">-->
+            <!--<i class="icon ion-ios-person-outline" style="font-size: 1.6em;"></i>-->
+          <!--</div>-->
+          <!--<h2 class="headBarZone">东莞</h2>-->
+          <!--&lt;!&ndash;<i class="icon ion-ios-arrow-down" style="font-size: 1.1em;"></i>&ndash;&gt;-->
+          <!--<div style="display: inline-block;margin:0;padding:0;">-->
+            <!--<label class="item-input-wrapper" style="background: rgba(255, 250, 250, 1);width: 12em;margin:0;padding:0;">-->
+              <!--<input type="search" placeholder="请输入楼盘名" style="height:24px;color:#222;width: 200px;">-->
+              <!--<i class="icon ion-ios-search placeholder-icon" style="font-size: 1.8em;background: none !important;"></i>-->
+            <!--</label>-->
+          <!--</div>-->
+        <!--</div>-->
+
+        <div style="position:absolute;width:84vw;left:8vw;padding:0 0.5em;background-color:#fff;color:#444;display: flex;border-radius:0.25em;height:3em;z-index:9999;top:1em;">
+          <div menu-toggle="left" style="margin:0;border:1px solid #ccc;border-radius:2em;width:1.8em;height:1.8rem;flex-basis:2em;align-self: center;text-align: center;">
+            <i class="icon ion-ios-person-outline" style="font-size: 1.8em;"></i>
+          </div>
+          <h2 style="margin:0;padding:0;font-family:'华文细黑';font-size: 1.4em; flex-basis:3em; text-align: center; align-self: center;align-content: flex-start;">东莞</h2>
           <!--<i class="icon ion-ios-arrow-down" style="font-size: 1.1em;"></i>-->
-          <div style="display: inline-block;">
-            <label class="item-input-wrapper" style="background: rgba(255, 250, 250, 1);margin-left: .6em;width: 12em;">
-              <input type="search" placeholder="请输入楼盘名" style="height:24px;color:#222;width: 200px;">
-              <i class="icon ion-ios-search placeholder-icon" style="font-size: 1.8em;background: none !important;"></i>
+          <div style="margin:0;padding:0; align-self: center; flex-grow:1;flex-shrink: 1;">
+            <label class="item-input-wrapper" style="position:relative;background: rgba(255, 250, 250, 1); margin:0;padding:0;display: flex;">
+              <input type="search" placeholder="请输入楼盘名" style="height:24px;color:#222;padding:4px; flex-grow: 1; flex-shrink: 1;padding-right: 1.4em;">
+              <i class="icon ion-ios-search placeholder-icon" style="flex-basis:1.4em;font-size: 1.8em;background: none !important;position: absolute;right:0;"></i>
             </label>
           </div>
         </div>

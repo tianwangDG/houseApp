@@ -86,7 +86,7 @@ angular.module('starter.controllers', [])
 	$scope.showLpInit = {
 		hasMore: true,
 		page: 1,
-		pageSize:10
+		pageSize:5
 	};
 	$scope.result = [];
 
@@ -271,10 +271,12 @@ angular.module('starter.controllers', [])
 		//console.log(id);
 		//console.log(lx);
 		//console.log($index);
+
 		//console.log($scope.filter[$index]['items']);
 		$scope.items = $scope.filter[$index]['items'];
 
 		$scope.showMoreFilterBox = false;
+
 
 		//控制下拉栏显示与隐藏
 		if($scope.showFilterBox){
@@ -282,6 +284,7 @@ angular.module('starter.controllers', [])
 		}
 		$scope.showFilterBox = !$scope.showFilterBox;
 		$scope.key = id;
+
 	}
 
 
@@ -440,12 +443,21 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('houseCtrl', function($scope,$stateParams,$http,HouseDetail,$state,appInfo,AuthService){
+.controller('houseCtrl', function($scope,$stateParams,$http,$ionicLoading,HouseDetail,$state,appInfo,AuthService){
+
+  $ionicLoading.show({
+    animation: 'fade-in',
+    duration:1000,
+    template: '<ion-spinner icon="lines"/>',
+  });
+
+
 	//console.log($stateParams.id);
 	var house_id = parseInt($stateParams.id);
 	HouseDetail.get({id:house_id}).$promise.then(function(response){
 		$scope.lpInfo = response.data;
 		$scope.descs = $scope.lpInfo.house_description.split(',');
+    $ionicLoading.hide();
 	});
 
   var customer_id = AuthService.get_Customer_id();
@@ -524,6 +536,7 @@ angular.module('starter.controllers', [])
           console.log(response);
           $scope.house_discount = response.data;
           $scope.reservation.customer_telephone = response.data.customer_telephone;
+          $scope.reservation.default_telephone = response.data.customer_telephone;
 
         })
     }else{
@@ -551,6 +564,7 @@ angular.module('starter.controllers', [])
       $http.get(appInfo.customerApi + '/getverifycode?customer_telephone=' + customer_telephone + '&customer_id=' + parseInt($stateParams.customer_id))
         .success(function(response){
           console.log(response.data);
+          $scope.code = response.data.code;
           $scope.submitBtn = false;
           if(response.status){
             $scope.verifyBtn = true;
@@ -575,33 +589,43 @@ angular.module('starter.controllers', [])
 
     //添加预约
     $scope.createReservation = function(){
-      if($stateParams.customer_id){
-        $http({
-          method:'POST',
-          url: appInfo.apiUrl + '/reservation/create',
-          data:{ customer_id:parseInt($stateParams.customer_id), house_id:parseInt($stateParams.house_id), reservation_telephone:$scope.reservation.customer_telephone,customer_code:$scope.reservation.code },
-          headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}
-        })
-          .success(function(response){
-            console.log(response);
-            //$window.location.reload(true);
-            if(response.status){
-              $state.go('tab.concern', {reload:true});
-            }else{
-              //如果重复预约，弹出提示框
-              var alertPopup = $ionicPopup.alert({
-                title: '提示',
-                template: '您已预约此楼盘，无需重复预约！'
-              });
 
-              alertPopup.then(function(res) {
-                $state.go('tab.concern', {reload:true});
-              });
-            }
+      if($stateParams.customer_id){
+
+        if(($scope.reservation.default_telephone != $scope.reservation.customer_telephone) && (parseInt($scope.code) != parseInt($scope.reservation.code))){
+          var alertPopup = $ionicPopup.alert({
+            title: '提示',
+            template: '请输入正确的验证码！'
+          });
+        }else{
+          $http({
+            method:'POST',
+            url: appInfo.apiUrl + '/reservation/create',
+            data:{ customer_id:parseInt($stateParams.customer_id), house_id:parseInt($stateParams.house_id), reservation_telephone:$scope.reservation.customer_telephone,customer_code:$scope.reservation.code },
+            headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}
           })
+            .success(function(response){
+              console.log(response);
+              //$window.location.reload(true);
+              if(response.status){
+                $state.go('tab.concern', null, {reload:true});
+              }else{
+                //如果重复预约或验证码错误，弹出提示框
+                var alertPopup = $ionicPopup.alert({
+                  title: '提示',
+                  template: '您已预约此楼盘，无需重复预约！'
+                });
+
+                alertPopup.then(function(res) {
+                  $state.go('tab.concern', null, {reload:true});
+                });
+              }
+            })
+        }
       }else{
         $state.go('login');
       }
+
     }
 
 })
@@ -636,11 +660,18 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('houseYbjCtrl', function($scope,$rootScope,$stateParams,HouseDetail,$ionicSlideBoxDelegate,$state){
+.controller('houseYbjCtrl', function($scope,$rootScope,$stateParams,$ionicLoading,HouseDetail,$ionicSlideBoxDelegate,$state,AuthService){
+  $ionicLoading.show({
+    animation: 'fade-in',
+    duration:1000,
+    template: '<ion-spinner icon="lines"/>',
+  });
 
 
 	//console.log($stateParams.id);
 	var house_id = parseInt($stateParams.house_id);
+
+  var customer_id = AuthService.get_Customer_id();
 
 
 	if(house_id){
@@ -654,9 +685,10 @@ angular.module('starter.controllers', [])
 	//console.log($rootScope.id);
 	$scope.house_featured = [];
 	HouseDetail.get({id:$scope.house_id}).$promise.then(function(response){
-    console.log(response.data);
+    //console.log(response.data);
 		$scope.lpInfo = response.data;
 		$ionicSlideBoxDelegate.update();
+    $ionicLoading.hide();
 
 		//过滤“不限”特色字段
 		$scope.lpInfo.house_featured.forEach(function(item){
@@ -668,10 +700,32 @@ angular.module('starter.controllers', [])
 
 	//设置特色标签颜色
 	$scope.colors = ["#f3541f","#326ed7","#653a78","#34ab55","#ffbc44","#039BE5","#009688","#536DFE","#AB47BC","#E53935","#3F51B5"];
+
+
+  //获取优惠，跳转到获取优惠页面，传参数
+  $scope.getDiscount = function(){
+
+    $state.go('getDiscount', {customer_id:customer_id,house_id:house_id});
+
+  }
+
+
 })
 
 
-.controller('houseSjtCtrl', function($scope,$rootScope,$stateParams,HouseDetail,$ionicSlideBoxDelegate,$state){
+.controller('houseSjtCtrl', function($scope,$rootScope,$stateParams,$ionicLoading,HouseDetail,$ionicSlideBoxDelegate,$state,AuthService){
+
+  $ionicLoading.show({
+    animation: 'fade-in',
+    duration:1000,
+    template: '<ion-spinner icon="lines"/>',
+  });
+
+
+  var house_id = parseInt($stateParams.house_id);
+
+  var customer_id = AuthService.get_Customer_id();
+
 	//console.log($rootScope.id);
 	if($stateParams.house_id){
 		$scope.house_id = parseInt($stateParams.house_id);
@@ -695,10 +749,27 @@ angular.module('starter.controllers', [])
 
 	//设置特色标签颜色
 	$scope.colors = ["#f3541f","#326ed7","#653a78","#34ab55","#ffbc44","#039BE5","#009688","#536DFE","#AB47BC","#E53935","#3F51B5"];
+
+
+  //获取优惠，跳转到获取优惠页面，传参数
+  $scope.getDiscount = function(){
+
+    $state.go('getDiscount', {customer_id:customer_id,house_id:house_id});
+
+  }
+
+
 })
 
 
-.controller('houseZslCtrl', function($scope,$rootScope,$stateParams,HouseDetail,$ionicSlideBoxDelegate, $ionicScrollDelegate, $window, $state) {
+.controller('houseZslCtrl', function($scope,$rootScope,$stateParams,$ionicLoading,HouseDetail,$ionicSlideBoxDelegate, $ionicScrollDelegate, $window, $state) {
+
+  $ionicLoading.show({
+    animation: 'fade-in',
+    duration:1000,
+    template: '<ion-spinner icon="lines"/>',
+  });
+
 
 	if($stateParams.house_id){
 		$scope.house_id = parseInt($stateParams.house_id);
@@ -708,6 +779,7 @@ angular.module('starter.controllers', [])
 	}
 
 	HouseDetail.get({id:$scope.house_id}).$promise.then(function(response){
+    //console.log(response);
 		$scope.lpInfo = response.data;
 		$scope.sliderArr = $scope.lpInfo.apartments;
 		$scope. map = {

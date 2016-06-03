@@ -9,7 +9,7 @@
       <div style="background: url({{lpInfo.house_distribution_image_source_url}})"  ng-style="{width:map.px + 'px',height: map.py + 'px'}">
         <div class="" ng-repeat="ldLabel in map.ld">
             <div class="ldLabel" ng-style="{top: (ldLabel.building_position_x - 50)  + 'px',left: (ldLabel.building_position_x - 44) + 'px'}">
-              {{ldLabel.building_name}}
+              <span style="height:3em;">{{ldLabel.building_name}}</span>
               <div class="hxLabel">
                 <p ng-repeat="hx in ldLabel.apartments">{{hx.apartment_title}}</p>
               </div>

@@ -3,6 +3,10 @@ angular.module('concernController', [])
 
 .controller('concernCtrl', function($scope, $ionicModal, $ionicHistory,$http, $window, $ionicPopup, $state,appInfo, AuthService) {
 
+
+
+
+
     var customer_id = AuthService.get_Customer_id();
 
     $scope.active_content = 'booked';

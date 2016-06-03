@@ -4,8 +4,7 @@
     <div class="h1 title" style="font-family: '华文细黑';">获取优惠</div>
   </div>
 
-  <ion-content style="position:absolute;width:100%;min-height:100%;" >
-    <div style="position:absolute;background-image: url('img/hqyh.jpg') ;width:100%;height:100vh;background-size: cover;"></div>
+  <ion-content style="background-image: url('img/hqyh.jpg');width:100%;height:100%;background-size: cover;" >
     <div style="position:absolute; width: 100%;height:100%;top:44px;">
       <div style="background: url('img/yh.jpg') no-repeat center center;position:relative; margin: 0 auto;width:18em;margin-top:2em;margin-bottom:2em;min-height: 10em; background-size: contain;">
         <!--<img src="img/yh.jpg" style="display:block;padding:6vh 10vw 2vh 10vw;width:100%;height:auto;" />-->
@@ -24,13 +23,21 @@
         <label class="item-input item-stacked-label" ng-if="!showVerifyCode">
           <span class="input-label" style="color:#555;">验证码：</span>
           <input type="text" ng-model="reservation.code" placeholder="请输入验证码" style="background: none;border-bottom: 1px solid rgba(256,256,256,.5)">
+          <input type="hidden" ng-model="code" />
         </label>
-        <button class="button button-full button-energized" ng-click="createReservation()" style="color:#000;font-family: '华文细黑';" ng-disabled="(reservation.customer_telephone == parseInt($scope.house_discount.customer_telephone))" >确定</button>
+        <!--<button class="button button-full button-energized" ng-click="createReservation()" style="color:#000;font-family: '华文细黑';" ng-disabled="(reservation.customer_telephone == parseInt($scope.house_discount.customer_telephone))" >确定</button>-->
+        <button class="button button-full button-energized" ng-click="createReservation()" style="color:#000;font-family: '华文细黑';" ng-disabled="(reservation.customer_telephone == parseInt(house_discount.customer_telephone)) || (reservation.customer_telephone != reservation.default_telephone && !reservation.code)">确定</button>
       </div>
 
 
 
 
+
+      <!--<input type="tel" ng-model="reservation.default_telephone" style="background: none;border-bottom: 1px solid rgba(256,256,256,.5);">-->
+
+      <!--<div>{{reservation.customer_telephone}}</div>-->
+      <!--<div>{{reservation.default_telephone}}</div>-->
+      <!--<div>{{house_discount.customer_telephone}}</div>-->
 
 
 

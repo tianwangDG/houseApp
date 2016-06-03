@@ -23,7 +23,7 @@
           <span class="lpFeatured" ng-repeat="hf in house_featured track by $index" ng-style="{color: colors[$index % colors.length]}">{{hf}}</span>
         </div>
         <div style="margin:10px 0;padding:6px 0 0 0;">
-          <button class="button button-full button-assertive" style="font-family: '华文细黑';">
+          <button class="button button-full button-assertive" style="font-family: '华文细黑';" ng-click="getDiscount()">
             预约优惠
           </button>
         </div>

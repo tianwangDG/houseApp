@@ -236,7 +236,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             zbInfo:function($stateParams,HouseDetail){
               return (
                 HouseDetail.get({id:$stateParams.house_id}).$promise.then(function(response){
-                  return {house_name:response.data.house_name,lat: response.data.house_latitude,lon:response.data.house_longtitude};
+                  return {house_name:response.data.house_name,lat: response.data.house_latitude,lon:response.data.house_longitude};
                 })
               );
             }
