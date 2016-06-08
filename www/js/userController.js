@@ -183,9 +183,9 @@ angular.module('userController', ['ngCordova'])
     //});
 
 
-    $scope.$on("$ionicView.enter", function(){
-      $scope.loginData = {};
-    })
+    //$scope.$on("$ionicView.enter", function(){
+    //  $scope.loginData = {};
+    //})
     $scope.loginData = {};
 
     $scope.login = function(customer) {
@@ -244,7 +244,7 @@ angular.module('userController', ['ngCordova'])
 
 		$http.get(appInfo.customerApi + '/getMemberInfo?customer_id=' + parseInt($scope.customer_id))
 			.success(function(response){
-				//console.log(response.data);
+				console.log(response.data);
 				$rootScope.userData = response.data;
 
 				$scope.customer_industry = $rootScope.userData.customer_industry;

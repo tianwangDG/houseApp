@@ -43,6 +43,7 @@ angular.module('starter.controllers', [])
 
 .controller('indexCtrl', function($scope, $rootScope, $state, $ionicSlideBoxDelegate,$http, appInfo, Slider, House, AuthService) {
 
+
   //格式化手机号码
   var replaceChars = function(str,length,fromBegin,mask){
     mask = mask ? mask : '*';
@@ -59,11 +60,15 @@ angular.module('starter.controllers', [])
     }
   }
 
+
   var customer_id = AuthService.get_Customer_id();
+
+
 
   if(customer_id){
     $http.get(appInfo.customerApi + '/getMemberInfo?customer_id=' + parseInt(customer_id))
       .success(function(response){
+        console.log(response.data);
         $scope.userData = response.data;
         $scope.userData.customer_telephone ? $scope.formatedTelephone = replaceChars($scope.userData.customer_telephone,4,false,'*'):false;
         $scope.userData.customer_nickname ? $scope.formatedNickname = $scope.userData.customer_nickname: $scope.formatedNickname = '用户';
